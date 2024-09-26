@@ -1,0 +1,388 @@
+= Configure the Data Plane
+
+Using a preconfigured yaml file(*files/osp-ng-dataplane-netconfig.yaml*) we will configure the topology for each data plane network.
+
+Change directory to the files:
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files/disconnected
+----
+
+Apply the *network confguration*:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-dataplane-netconfig.yaml
+----
+
+== Create VM for Dataplane
+
+Log out from the bastion so that we go back to the hypervisor machine:
+
+[source,bash,role=execute]
+----
+logout
+----
+
+.Sample Output
+----
+[lab-user@hypervisor ~]#
+----
+
+Create the *RHEL compute* on lab-user (*hypervisor*) server:
+
+[source,bash,role=execute]
+----
+sudo -i
+cd /var/lib/libvirt/images
+cp rhel-9.4-x86_64-kvm.qcow2 rhel9-guest.qcow2
+qemu-img info rhel9-guest.qcow2
+qemu-img resize rhel9-guest.qcow2 +90G
+chown -R qemu:qemu rhel9-*.qcow2
+virt-customize -a rhel9-guest.qcow2 --run-command 'growpart /dev/sda 4'
+virt-customize -a rhel9-guest.qcow2 --run-command 'xfs_growfs /'
+virt-customize -a rhel9-guest.qcow2 --root-password password:redhat
+virt-customize -a rhel9-guest.qcow2 --run-command 'systemctl disable cloud-init'
+virt-customize -a /var/lib/libvirt/images/rhel9-guest.qcow2 --ssh-inject root:file:/root/.ssh/id_rsa.pub
+virt-customize -a /var/lib/libvirt/images/rhel9-guest.qcow2 --selinux-relabel
+qemu-img create -f qcow2 -F qcow2 -b /var/lib/libvirt/images/rhel9-guest.qcow2 /var/lib/libvirt/images/osp-compute-0.qcow2
+virt-install --virt-type kvm --ram 16384 --vcpus 4 --cpu=host-passthrough --os-variant rhel8.4 --disk path=/var/lib/libvirt/images/osp-compute-0.qcow2,device=disk,bus=virtio,format=qcow2 --network network:ocp4-provisioning --network network:ocp4-net --boot hd,network --noautoconsole --vnc --name osp-compute0 --noreboot
+virsh start osp-compute0
+----
+
+=== Login to the Compute and Verify
+
+Verify IP from 192.168.123.0/24
+
+[source,bash,role=execute]
+----
+watch virsh domifaddr osp-compute0 --source agent
+----
+
+.Sample Output
+[source,bash]
+----
+Every 2.0s: virsh domifaddr osp-compute0 --source agent                                                                                                 hypervisor: Wed Apr 17 07:03:13 2024
+
+ Name       MAC address          Protocol     Address
+-------------------------------------------------------------------------------
+ lo         00:00:00:00:00:00    ipv4         127.0.0.1/8
+ -          -                    ipv6         ::1/128
+ eth0       52:54:00:c0:0a:26    ipv4         172.22.0.202/24
+ -          -                    ipv6         fe80::16:d083:92f4:f201/64
+ eth1       52:54:00:e5:ce:09    ipv4         192.168.123.73/24
+ -          -                    ipv6         fe80::bfc0:e5db:a655:729f/64
+----
+
+(CTRL + C to continue)
+
+[source,bash,role=execute]
+----
+virsh domifaddr osp-compute0 --source agent
+----
+
+Use the IP assigned to `eth1` above in the next step.
+
+=== Configure Ethernet Devices on New Compute
+
+SSH to the new VM.
+There is no password.
+
+[source,bash,role=execute]
+----
+ssh root@192.168.123.73
+----
+
+[source,bash,role=execute]
+----
+sudo hostnamectl set-hostname edpm-compute-0.aio.example.com
+nmcli co delete 'Wired connection 1'
+nmcli con add con-name "static-eth0" ifname eth0 type ethernet ip4 172.22.0.100/24 ipv4.dns "172.22.0.89"
+nmcli con up "static-eth0"
+nmcli co delete 'Wired connection 2'
+nmcli con add con-name "static-eth1" ifname eth1 type ethernet ip4 192.168.123.73/24 ipv4.dns "192.168.123.100" ipv4.gateway "192.168.123.1"
+nmcli con up "static-eth1"
+----
+
+And log off VM
+
+[source,bash,role=execute]
+----
+logout
+----
+
+Snapshot the Compute Server
+
+[source,bash,role=execute]
+----
+virsh snapshot-create-as osp-compute0 preprovisioned
+----
+
+Set SSH key
+
+[source,bash,role=execute]
+----
+sudo -i
+scp /root/.ssh/id_rsa root@192.168.123.100:/root/.ssh/id_rsa_compute
+scp /root/.ssh/id_rsa.pub root@192.168.123.100:/root/.ssh/id_rsa_compute.pub
+----
+
+WARNING: This might error initially because of unknown hosts file.
+Retry to make sure both files are copied.
+
+=== Finish the Dataplane
+
+Connect to the *bastion* server (Remember that bastion password is *redhat*):
+
+[source,bash,role=execute]
+----
+sudo -i
+ssh root@192.168.123.100
+----
+
+.Sample Output
+----
+[root@ocp4-bastion ~] #
+----
+
+Change to Lab Repo
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files/disconnected
+----
+
+Create Secret
+
+[source,bash,role=execute]
+----
+oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/root/.ssh/id_rsa_compute.pub --from-file=ssh-privatekey=/root/.ssh/id_rsa_compute --from-file=ssh-publickey=/root/.ssh/id_rsa_compute.pub -n openstack -o yaml | oc apply -f-
+ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
+oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
+----
+
+In order to deploy in a disconnected/proxied/airgapped environment some configurations need to be entered into the openstack-dataplane-nodeset yaml file
+
+The main configurations are:
+
+* RPM repository locations ( redhat only support satellite for hosting disconnected  RPM repositories) already pre-entered in the *edpm_bootstrap_command* ansible variable.
+* Local registry credentials (login / certs) pre-entered in the *edpm_container_registry_logins* ansible variable.
+* The variable *edpm_image_overrides* pointing to the required images for the dataplane deployment.
+
+We can extract the actual list being used by the openstack operator by running:
+
+[source,bash,role=execute]
+----
+oc get openstackversions.core.openstack.org openstack-galera-network-isolation -oyaml
+----
+Output:
+[source,bash]
+[...]
+----
+  containerImages:
+    agentImage: registry.redhat.io/rhoso-operators/openstack-baremetal-agent-rhel9@sha256:9802b2e34c8c0aa59526198e84e6761164b1dd6621cb32f800de6746c04438fe
+    ansibleeeImage: registry.redhat.io/rhoso-operators/ee-openstack-ansible-ee-rhel9@sha256:25347c9ca3232aa3f9316b87fc4b7d7914cf951a3594cb58043baf9dc1a43de7
+    aodhAPIImage: registry.redhat.io/rhoso/openstack-aodh-api-rhel9@sha256:bdadabefb649ce29dc4f0ee30154aaa3a184eac138bf610db5fbbce5b0bd2f8a
+    aodhEvaluatorImage: registry.redhat.io/rhoso/openstack-aodh-evaluator-rhel9@sha256:9606ec6255e10588c07d69cce366b32e38d7237fcaf938fa9c0bbfb2697f0e0f
+    aodhListenerImage: registry.redhat.io/rhoso/openstack-aodh-listener-rhel9@sha256:fba5c63a5ea70587aa1af6e743325f0e2836b02b233686f951e25a2581c99813
+    aodhNotifierImage: registry.redhat.io/rhoso/openstack-aodh-notifier-rhel9@sha256:7da38dd203adff220501bf0a017cfd0b568786289e2be4572233afb1145c70ac
+    apacheImage: registry.redhat.io/ubi9/httpd-24@sha256:43ca207a854a1f8de240d02ac379f311c2c5086970c042f13385cf0d3edca026
+    barbicanAPIImage: registry.redhat.io/rhoso/openstack-barbican-api-rhel9@sha256:2418f798d16c5d28d8789f8af40a853577de371af12291140de405229f88fa98
+    barbicanKeystoneListenerImage: registry.redhat.io/rhoso/openstack-barbican-keystone-listener-rhel9@sha256:636abd1a294adbaae02d3c731b3ed5180c48333cbe5000e744b18d3a5f505009
+    barbicanWorkerImage: registry.redhat.io/rhoso/openstack-barbican-worker-rhel9@sha256:e4e1fd63b1e493df264cb814d2805833ed615e130b1cf6d1d4563314387cc0d3
+    ceilometerCentralImage: registry.redhat.io/rhoso/openstack-ceilometer-central-rhel9@sha256:570d581689ffa83805be296a9ec7ea34e304cc6f5be8ad48a98ee8e7cdcd8191
+    ceilometerComputeImage: registry.redhat.io/rhoso/openstack-ceilometer-compute-rhel9@sha256:171b130d01bfa4fa9b781192e3624e5b5bd0d4b8b0bcb7c83629a15440c9610a
+    ceilometerIpmiImage: registry.redhat.io/rhoso/openstack-ceilometer-ipmi-rhel9@sha256:b8a0ead5bbc2ecf2cb2fd78dbacd0f9fee3e98f1cf7f26f5d542be971f0f01c1
+    ceilometerNotificationImage: registry.redhat.io/rhoso/openstack-ceilometer-notification-rhel9@sha256:ac65f5d50b308f0871c70105f9647ff6acf73122980f4a8c6a87f0a60a873a1a
+    ceilometerProxyImage: registry.redhat.io/ubi9/httpd-24@sha256:43ca207a854a1f8de240d02ac379f311c2c5086970c042f13385cf0d3edca026
+    ceilometerSgcoreImage: registry.redhat.io/stf/sg-core-rhel8@sha256:7e6a9cded7d44104fdc43d8cc67eb773547aa904f3ee62497098747d81ad3eae
+    cinderAPIImage: registry.redhat.io/rhoso/openstack-cinder-api-rhel9@sha256:3fe5ccffd3c3045ed7e4e70921fed6de6522c8a2f98134c733e6b273fd049265
+    cinderBackupImage: registry.redhat.io/rhoso/openstack-cinder-backup-rhel9@sha256:763a02347577fdf257a784acf78c1ae433357cf79ae8fd944972cdce0849196f
+    cinderSchedulerImage: registry.redhat.io/rhoso/openstack-cinder-scheduler-rhel9@sha256:cbd0091ce11178e5c76dab06f4bde99b832cdc089a35eb135a77347e3ce75189
+    cinderVolumeImages:
+      default: registry.redhat.io/rhoso/openstack-cinder-volume-rhel9@sha256:b099eec225a0b1e279f785e821f9010e7c7abf6b45fda95ddd6aa6befaedfff7
+    designateAPIImage: registry.redhat.io/rhoso/openstack-designate-api-rhel9@sha256:84da868dc5ed665fec6d25f56b4fac437b9da717b5e5abbaef8a33a9484e68e5
+    designateBackendbind9Image: registry.redhat.io/rhoso/openstack-designate-backend-bind9-rhel9@sha256:74eb78a8720b484933a1a14e33923f7afa12c92174f299e5662cdfb9f3545789
+    designateCentralImage: registry.redhat.io/rhoso/openstack-designate-central-rhel9@sha256:3751579a74e4fc8e4c704a98db7e6c5d3e1fc58447e480a39e93a097cf0a8e04
+    designateMdnsImage: registry.redhat.io/rhoso/openstack-designate-mdns-rhel9@sha256:c078b5c38356c2c5ab3f0021a241d0ed9041f2a3381e216340dc080c6aa50e4c
+    designateProducerImage: registry.redhat.io/rhoso/openstack-designate-producer-rhel9@sha256:201c7ad41a56d023ae07843683fd33f961078bb88c88c841cd6f325608607623
+    designateUnboundImage: registry.redhat.io/rhoso/openstack-unbound-rhel9@sha256:9412f90eb12891ee9c43ac9e7c1581eb183363984ad831b92dba48b5abb31d2b
+    designateWorkerImage: registry.redhat.io/rhoso/openstack-designate-worker-rhel9@sha256:9c3c555775393a59fb358dfd0120166864cff6819cd00a5923ccdf3a244b7fcc
+    edpmFrrImage: registry.redhat.io/rhoso/openstack-frr-rhel9@sha256:5dcc186e336bf770a75f66484f28e99db4b6a823715f46f989fca409b9004b23
+    edpmIscsidImage: registry.redhat.io/rhoso/openstack-iscsid-rhel9@sha256:a8c6fbff7e2794f54da8f8b44c7a3443dd807f455513d9f7539c885147befc63
+    edpmLogrotateCrondImage: registry.redhat.io/rhoso/openstack-cron-rhel9@sha256:d5a4a608befc46099d2de32c6e437e9e1aa28c7a712e3ddb3ab8b774e6555124
+    edpmMultipathdImage: registry.redhat.io/rhoso/openstack-multipathd-rhel9@sha256:63faf18a9ee2ff8cb221454319ddcef460c868c02855e4598eef045b16e76e5e
+    edpmNeutronDhcpAgentImage: registry.redhat.io/rhoso/openstack-neutron-dhcp-agent-rhel9@sha256:5c58f25beb98135eb6167b5abb5b276d0879a78467486b7e02814669dca17823
+    edpmNeutronMetadataAgentImage: registry.redhat.io/rhoso/openstack-neutron-metadata-agent-ovn-rhel9@sha256:38b5ecf1e926e2e4f7386931ab1758cdbb220a3a19b6710fa4b9c891f5f3741a
+    edpmNeutronOvnAgentImage: registry.redhat.io/rhoso/openstack-neutron-ovn-agent-rhel9@sha256:f09cb504f551e10567cf3fa18fc4fa98a3305dc536dbec32dc03f70d9bf9d66e
+    edpmNeutronSriovAgentImage: registry.redhat.io/rhoso/openstack-neutron-sriov-agent-rhel9@sha256:8e092b68688d1d4d6df8d74a06d8e1e8616c694b501e01853d03e8726d372b88
+    edpmNodeExporterImage: registry.redhat.io/openshift4/ose-prometheus-node-exporter-rhel9@sha256:b0f26a7feafb27b0c988107d8b077c720f25e04f93d1b2176b317ba3add00cad
+    edpmOvnBgpAgentImage: registry.redhat.io/rhoso/openstack-ovn-bgp-agent-rhel9@sha256:66342a8ee9339a48b9717ce231e7d007e6985b5946d73ae120d095266633be30
+    glanceAPIImage: registry.redhat.io/rhoso/openstack-glance-api-rhel9@sha256:a0d5996568ba1e13200b0f8c619d128465e7968691bccba7c504484317eac75e
+    heatAPIImage: registry.redhat.io/rhoso/openstack-heat-api-rhel9@sha256:a250f8860de0132e22fb477d016a98f3bab9df5dafce869f9a4182ac259af265
+    heatCfnapiImage: registry.redhat.io/rhoso/openstack-heat-api-cfn-rhel9@sha256:b668ef2442f6eccd5c4a72224e90ae6644f4bcc17a1d53dcc11f2166443b0247
+    heatEngineImage: registry.redhat.io/rhoso/openstack-heat-engine-rhel9@sha256:fea59fe70610afb6e463276dd5bb3b87b08ead2a7f3dff1d7fdea1a9b38e8ad3
+    horizonImage: registry.redhat.io/rhoso/openstack-horizon-rhel9@sha256:1db1aea5d32f8b654f47a0bb17810a8cb49f3b3dda5217f6a9321d78444e0a01
+    infraDnsmasqImage: registry.redhat.io/rhoso/openstack-neutron-server-rhel9@sha256:fe8e7efc93c5cb926535b5a70fe3b1db9be38797d359c18c79175e40fe126937
+    infraMemcachedImage: registry.redhat.io/rhoso/openstack-memcached-rhel9@sha256:05802712053ddeb0dddda72743007192618154b496199d818474bae17a1c0d8f
+    ironicAPIImage: registry.redhat.io/rhoso/openstack-ironic-api-rhel9@sha256:ffe19a6a0ea85965740cb4bf0032434f43f170b29c04693e3e3aaedfa80ca04b
+    ironicConductorImage: registry.redhat.io/rhoso/openstack-ironic-conductor-rhel9@sha256:8b692df25096059ed4df98d1e4cf0f901aab2fe54cd66f621899be2e444ffb2a
+    ironicInspectorImage: registry.redhat.io/rhoso/openstack-ironic-inspector-rhel9@sha256:1ca9db90111258a4334fc8b77378657524ad9792509ad9dd3c30f79b90f55872
+    ironicNeutronAgentImage: registry.redhat.io/rhoso/openstack-ironic-neutron-agent-rhel9@sha256:04c7929b5fe1afcb8bb07d55c83e1245a7135ebc2227cde64c979e2454547ccc
+    ironicPxeImage: registry.redhat.io/rhoso/openstack-ironic-pxe-rhel9@sha256:b5318cc5afbf1774f3be0dcb8d00b59c52aea6f4776e2334e9f566afa1ec6f2b
+    ironicPythonAgentImage: registry.redhat.io/rhoso/ironic-python-agent-rhel9@sha256:54dd347ddb426baf9abf3af686928bc9b356d900c58cd97a0de71c1c144cc8b4
+    keystoneAPIImage: registry.redhat.io/rhoso/openstack-keystone-rhel9@sha256:902e393459ebb27555f72e35eb4ade8ddec7e5789f25dbb306012f7c3b2fb39b
+    manilaAPIImage: registry.redhat.io/rhoso/openstack-manila-api-rhel9@sha256:c93c31e18fc173de88f615679546edad1819225ac8bcd362dd53ee05d6eeb053
+    manilaSchedulerImage: registry.redhat.io/rhoso/openstack-manila-scheduler-rhel9@sha256:8574bf9bd102aa85dc452308131038def905746b76f8b649f32761a3c9d5a7d6
+    manilaShareImages:
+      default: registry.redhat.io/rhoso/openstack-manila-share-rhel9@sha256:31deccda2105cada003667acb55250ed99d71887c571b800c4c8fd5920f95d71
+    mariadbImage: registry.redhat.io/rhoso/openstack-mariadb-rhel9@sha256:316b576bda43499035a2275969332b62e97ff3df87a58eb264d8093d163ed14a
+    neutronAPIImage: registry.redhat.io/rhoso/openstack-neutron-server-rhel9@sha256:fe8e7efc93c5cb926535b5a70fe3b1db9be38797d359c18c79175e40fe126937
+    novaAPIImage: registry.redhat.io/rhoso/openstack-nova-api-rhel9@sha256:8188cd239dc82e55cc42a78ffb5a5f5d4307138cbededb1ceed3893a21758dda
+    novaComputeImage: registry.redhat.io/rhoso/openstack-nova-compute-rhel9@sha256:1e970ab3cc7c36a7b586ed77ebd6e9c66853ff1633de3e8b1d9b5befb92d159d
+    novaConductorImage: registry.redhat.io/rhoso/openstack-nova-conductor-rhel9@sha256:9d549d63ee36f0c32f9e62383a48ecce1df430bb5ff4845b02a6f63e1a366806
+    novaNovncImage: registry.redhat.io/rhoso/openstack-nova-novncproxy-rhel9@sha256:1e58e5e62ee9d30677588fe65250fcc9ce475cc93bf83a9dbfd6773c5e397d8c
+    novaSchedulerImage: registry.redhat.io/rhoso/openstack-nova-scheduler-rhel9@sha256:4596e65329e86e3322577236290e21aca319d13ab1646249527db9cd02b1e563
+    octaviaAPIImage: registry.redhat.io/rhoso/openstack-octavia-api-rhel9@sha256:7f056fba164938a500f07e2d2dfe050ed55bf17dd1e003cc4ff31b6f32b6f34a
+    octaviaApacheImage: registry.redhat.io/ubi9/httpd-24@sha256:43ca207a854a1f8de240d02ac379f311c2c5086970c042f13385cf0d3edca026
+    octaviaHealthmanagerImage: registry.redhat.io/rhoso/openstack-octavia-health-manager-rhel9@sha256:4cbf50e02458462192e751818a5ff67122612b960284dc2a56b19471d9c1dd02
+    octaviaHousekeepingImage: registry.redhat.io/rhoso/openstack-octavia-housekeeping-rhel9@sha256:ad73dd975457bdbea266027a5a0e3eb5cee9b910348f5df71fefde4156e6115e
+    octaviaWorkerImage: registry.redhat.io/rhoso/openstack-octavia-worker-rhel9@sha256:f354661d4b9fb933424f96ad45a8949cdbb581f546f3346fddd6b289069ec7e7
+    openstackClientImage: registry.redhat.io/rhoso/openstack-openstackclient-rhel9@sha256:388f0c6a795ccafef8aae13cfd94e541104d7617b7a98a61a85f91fd384d011f
+    osContainerImage: registry.redhat.io/rhoso/edpm-hardened-uefi-rhel9@sha256:fd80b85c7d6a6290e9c1d77abcade3104d041f364dff8edd7f1d286822eaa6f8
+    ovnControllerImage: registry.redhat.io/rhoso/openstack-ovn-controller-rhel9@sha256:d425294a2bdc634210b3deccdc0d26762db262518768b94789da9fed303290dc
+    ovnControllerOvsImage: registry.redhat.io/rhoso/openstack-ovn-base-rhel9@sha256:05ff2983f31b836d38e865e9e0330e5b82f226a746b8b58c64e6bd592bfd3219
+    ovnNbDbclusterImage: registry.redhat.io/rhoso/openstack-ovn-nb-db-server-rhel9@sha256:a8c491a848c88f1328d5c4006aa5603d2e97b1ae61e095a8313bb877c52f439c
+    ovnNorthdImage: registry.redhat.io/rhoso/openstack-ovn-northd-rhel9@sha256:1ab9eb0a29b9ec5e3a872b33a02e382b60cc9bcb6c8e73021649338ed2fe5841
+    ovnSbDbclusterImage: registry.redhat.io/rhoso/openstack-ovn-sb-db-server-rhel9@sha256:281804cd28127f0c3f358e88cd73df18992a3430766ac89732c95f2aa1252513
+    placementAPIImage: registry.redhat.io/rhoso/openstack-placement-api-rhel9@sha256:0d6aab0c532e1dbaa8fb0868e31b56ea411abe224503c6d8143e6f504a52775d
+    rabbitmqImage: registry.redhat.io/rhoso/openstack-rabbitmq-rhel9@sha256:1584626b99442e4849babb5ab16d15dd4fa66b95d202f2a25a989c70e00e0426
+    swiftAccountImage: registry.redhat.io/rhoso/openstack-swift-account-rhel9@sha256:a03627e466d1392c3bdfd994cf74637eafb315fc1503d0f62fea9a02df173dfe
+    swiftContainerImage: registry.redhat.io/rhoso/openstack-swift-container-rhel9@sha256:d2d1c9c9655d6f265ff88337e26dcafa09536226cf6602c12d21265a4fb620b0
+    swiftObjectImage: registry.redhat.io/rhoso/openstack-swift-object-rhel9@sha256:8c0834bd39629a0a155b920a11fb5670758233141b5b16a3cb22db2223292c1d
+    swiftProxyImage: registry.redhat.io/rhoso/openstack-swift-proxy-server-rhel9@sha256:c5cefdead82887aba65092ed40c6f60bc37db04a1c8274678b553833a7fc9206
+[...]
+----
+
+Note the mapping between edpm container image variable and *openstackversions.core.openstack.org* ansible variables that we will be used for the next point:
+
+.Mapping
+----
+edpm_ovn_controller_agent_image: ovnControllerImage
+edpm_iscsid_image: edpmIscsidImage
+edpm_logrotate_crond_image: edpmLogrotateCrondImage
+edpm_neutron_ovn_agent_image: edpmNeutronOvnAgentImage
+edpm_frr_image: edpmFrrImage
+edpm_ovn_bgp_agent_image: edpmOvnBgpAgentImage
+edpm_multipathd_image: edpmMultipathdImage
+edpm_neutron_sriov_image: edpmNeutronSriovAgentImage
+edpm_telemetry_node_exporter_image: edpmNodeExporterImage
+edpm_neutron_metadata_agent_image: edpmNeutronMetadataAgentImage
+edpm_nova_compute_image: novaComputeImage
+edpm_telemetry_ceilometer_compute_image: ceilometerComputeImage
+edpm_telemetry_ceilometer_ipmi_image: ceilometerIpmiImage
+----
+    
+
+Edit the *osp-ng-dataplane-node-set-deploy.yaml* file and replace the string "uuid" by the uuid of your lab (`{guid}`) and make sure the container images signatures match the images from the *openstackversion* CR executed before:
+
+[source,bash,role=execute]
+----
+vi osp-ng-dataplane-node-set-deploy.yaml
+----
+
+.Sample Output
+----
+[...]
+         edpm_container_registry_logins:
+          quay.apps.55nc6.dynamic.redhatworkshops.io:
+            quay_user: openstack
+         edpm_bootstrap_command: |
+           ex +'/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <(echo | openssl s_client -showcerts -connect quay.apps.55nc6.dynamic.redhatworkshops.io:443) -scq > server.pem
+           sudo cp server.pem /etc/pki/ca-trust/source/anchors/
+           sudo cp server.pem /etc/pki/tls/certs/
+           sudo update-ca-trust
+           sudo rpm -Uvh http://satellite.ocp.example.com/pub/katello-ca-consumer-latest.noarch.rpm
+           sudo subscription-manager register --org="My_Organization" --activationkey="rhoso18" --serverurl satellite.ocp.example.com
+           sudo subscription-manager repos --disable=*
+           sudo subscription-manager release --set=9.4
+           sudo subscription-manager repos --enable=rhel-9-for-x86_64-baseos-eus-rpms --enable=rhel-9-for-x86_64-appstream-eus-rpms --enable=rhel-9-for-x86_64-highavailability-eus-rpms --enable=rhel-9-for-x86_64-highavailability-rpms --enable=fast-datapath-for-rhel-9-x86_64-rpms --enable=rhoso-18.0-for-rhel-9-x86_64-rpms --enable=rhceph-7-tools-for-rhel-9-x86_64-rpms
+           sudo subscription-manager auto-attach
+         registry_url: quay.apps.55nc6.dynamic.redhatworkshops.io/quay_user
+         edpm_bootstrap_release_version_package: "rhoso-release"
+         edpm_ovn_controller_agent_image: "{{ registry_url }}/rhoso/openstack-ovn-controller-rhel9@sha256:d425294a2bdc634210b3deccdc0d26762db262518768b94789da9fed303290dc"
+         edpm_iscsid_image: "{{ registry_url }}/rhoso/openstack-iscsid-rhel9@sha256:a8c6fbff7e2794f54da8f8b44c7a3443dd807f455513d9f7539c885147befc63"
+         edpm_logrotate_crond_image: "{{ registry_url }}/rhoso/openstack-cron-rhel9@sha256:d5a4a608befc46099d2de32c6e437e9e1aa28c7a712e3ddb3ab8b774e6555124"
+         edpm_neutron_ovn_agent_image: "{{ registry_url }}/rhoso/openstack-neutron-ovn-agent-rhel9@sha256:f09cb504f551e10567cf3fa18fc4fa98a3305dc536dbec32dc03f70d9bf9d66e"
+         edpm_frr_image: "{{ registry_url }}/rhoso/openstack-frr-rhel9@sha256:5dcc186e336bf770a75f66484f28e99db4b6a823715f46f989fca409b9004b23"
+         edpm_ovn_bgp_agent_image: "{{ registry_url }}/rhoso/openstack-ovn-bgp-agent-rhel9@sha256:66342a8ee9339a48b9717ce231e7d007e6985b5946d73ae120d095266633be30"
+         edpm_multipathd_image: "{{ registry_url }}/rhoso/openstack-multipathd-rhel9@sha256:63faf18a9ee2ff8cb221454319ddcef460c868c02855e4598eef045b16e76e5e"
+         edpm_neutron_sriov_image: "{{ registry_url }}/rhoso/openstack-neutron-sriov-agent-rhel9@sha256:8e092b68688d1d4d6df8d74a06d8e1e8616c694b501e01853d03e8726d372b88"
+         edpm_telemetry_node_exporter_image: "{{ registry_url }}/openshift4/ose-prometheus-node-exporter-rhel9@sha256:b0f26a7feafb27b0c988107d8b077c720f25e04f93d1b2176b317ba3add00cad"
+         edpm_neutron_metadata_agent_image: "{{ registry_url }}/rhoso/openstack-neutron-metadata-agent-ovn-rhel9@sha256:38b5ecf1e926e2e4f7386931ab1758cdbb220a3a19b6710fa4b9c891f5f3741a"
+         edpm_nova_compute_image: "{{ registry_url }}/rhoso/openstack-nova-compute-rhel9@sha256:1e970ab3cc7c36a7b586ed77ebd6e9c66853ff1633de3e8b1d9b5befb92d159d"
+         edpm_telemetry_ceilometer_compute_image: "{{ registry_url }}/rhoso/openstack-ceilometer-compute-rhel9@sha256:171b130d01bfa4fa9b781192e3624e5b5bd0d4b8b0bcb7c83629a15440c9610a"
+         edpm_telemetry_ceilometer_ipmi_image: "{{ registry_url }}/rhoso/openstack-ceilometer-ipmi-rhel9@sha256:b8a0ead5bbc2ecf2cb2fd78dbacd0f9fee3e98f1cf7f26f5d542be971f0f01c1"
+[...]
+----
+
+Check that the output of this command is empty before proceeding:
+[source,bash,role=execute]
+----
+cat osp-ng-dataplane-node-set-deploy.yaml | grep "uuid"
+----
+
+Finally apply the OpenStack deployment and OpenStack nodeset yamls:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-dataplane-node-set-deploy.yaml
+oc apply -f osp-ng-dataplane-deployment.yaml
+----
+
+You can view the Ansible logs while the deployment executes:
+
+[source,bash,role=execute]
+----
+oc logs -l app=openstackansibleee -f --max-log-requests 10
+----
+
+.Sample Output
+----
+(...)
+PLAY RECAP *********************************************************************
+edpm-compute-0             : ok=53   changed=26   unreachable=0    failed=0    skipped=54   rescued=0    ignored=0
+----
+
+Ctrl-C to exit.
+
+Verify that the data plane is deployed.
+
+NOTE: This takes several minutes.
+
+[source,bash,role=execute]
+----
+oc get openstackdataplanedeployment
+----
+
+Repeat the query until you see the following:
+
+.Sample Output
+----
+NAME                  STATUS   MESSAGE
+openstack-edpm-ipam   True     Setup Complete
+----
+
+[source,bash,role=execute]
+----
+oc get openstackdataplanenodeset
+----
+
+Repeat the query until you see the following:
+
+.Sample Output
+----
+NAME                  STATUS   MESSAGE
+openstack-edpm-ipam   True     NodeSet Ready
+----
