@@ -113,3 +113,8 @@ bootstrap-openstack-edpm        ["ctlplane"]         True     Job completed
 download-cache-openstack-edpm   ["ctlplane"]         False    Job in progress
 repo-setup-openstack-edpm       ["ctlplane"]         True     Job completed
 ----
++
+To further investigate a service that is displaying a particular job condition message, view its logs by using the command oc logs job/<service>. For example, to view the logs for the repo-setup-openstack-edpm service, use the command 
+----
+oc logs job/repo-setup-openstack-edpm.
+----
