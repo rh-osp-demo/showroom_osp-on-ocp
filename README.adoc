@@ -1,7 +1,7 @@
-# Red Hat OpenStack Services on OpenShift Beta Demo
+# Red Hat OpenStack Services on OpenShift Lab/Demo
 Installation instructions to install the Beta version
 of Red Hat OpenStack Services on OpenShift.
 
 Click in the link below to get started:
 
-- [*Instructions*]()
+- [*Instructions*](https://rh-osp-demo.github.io/showroom_osp-on-ocp/)
