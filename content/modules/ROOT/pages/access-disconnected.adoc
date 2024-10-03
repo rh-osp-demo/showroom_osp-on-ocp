@@ -135,7 +135,6 @@ From the Bastion:
 ----
 oc patch openstackcontrolplanes/openstack-galera-network-isolation -p='[{"op": "replace", "path": "/spec/horizon/enabled", "value": true}]' --type json
 oc patch openstackcontrolplane/openstack-galera-network-isolation -p '{"spec": {"horizon": {"template": {"customServiceConfig": "USE_X_FORWARDED_HOST = False" }}}}' --type=merge
-oc patch openstackcontrolplane/openstack-galera-network-isolation -p '{"spec": {"horizon": {"apiOverride": {"route": {"spec": {"tls": {"insecureEdgeTerminationPolicy": "Allow", "termination": "edge"}}}}}}}' --type=merge
 ----
 
 Check that the horizon pods are running after enabling it:
