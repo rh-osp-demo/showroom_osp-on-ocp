@@ -150,7 +150,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/pnavarro/showroom_osp-on-ocp-lb1374.git'
+    repoURL: 'https://github.com/pnavarro/showroom_osp-on-ocp.git'
     targetRevision: HEAD
     path: content/files/manifests/openstack-control-plane-deployment
   destination:

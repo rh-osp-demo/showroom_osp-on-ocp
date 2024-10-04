@@ -166,7 +166,7 @@ In the next chapter we will refer to this repo as the variable: $YOUR_REPO_URL
 
 Example:
 
-Replace $YOUR_REPO_URL by 'https://github.com/$your_github_id/showroom_osp-on-ocp-lb1374.git'
+Replace $YOUR_REPO_URL by 'https://github.com/$your_github_id/showroom_osp-on-ocp.git'
 
 Clone your your own forked repo in the bastion:
 
