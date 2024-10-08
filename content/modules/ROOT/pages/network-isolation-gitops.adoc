@@ -19,7 +19,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/pnavarro/showroom_osp-on-ocp.git'
+    repoURL: 'https://github.com/rh-osp-demo/showroom_osp-on-ocp.git'
     targetRevision: HEAD
     path: content/files/manifests/network-configuration
   destination:

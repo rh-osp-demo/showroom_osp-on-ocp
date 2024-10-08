@@ -6,7 +6,7 @@ In the bastion terminal, clone the repo and change directory to the files that w
 +
 [source,bash,role=execute]
 ----
-git clone https://github.com/pnavarro/showroom_osp-on-ocp.git labrepo
+git clone https://github.com/rh-osp-demo/showroom_osp-on-ocp.git labrepo
 cd labrepo/content/files
 ----
 

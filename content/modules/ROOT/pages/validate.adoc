@@ -48,7 +48,7 @@ spec:
   gprcPodConfig:
     securityContextConfig: legacy
   # adjust the repolink below to match your environment:
-  image: quay.io/redhat_emp1/pnavarro-ga-test-operator-index:latest
+  image: quay.io/redhat_emp1/rh-osp-demo-ga-test-operator-index:latest
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup

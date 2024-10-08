@@ -160,7 +160,7 @@ image::1_argo_apps.png[Argocd Prerequisites]
 
 == Fork the lab repo
 
-Fork the github repo https://github.com/pnavarro/showroom_osp-on-ocp-break-fix-using-gitops into your github personal space. 
+Fork the github repo https://github.com/rh-osp-demo/showroom_osp-on-ocp-break-fix-using-gitops into your github personal space. 
 
 In the next chapter we will refer to this repo as the variable: $YOUR_REPO_URL
 
