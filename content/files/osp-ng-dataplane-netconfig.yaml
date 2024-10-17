@@ -6,7 +6,7 @@ metadata:
 spec:
   networks:
   - name: ctlplane
-    dnsDomain: ctlplane.aio.example.com
+    dnsDomain: ctlplane.sandbox-r784v-ocp4-cluster.svc.cluster.local
     subnets:
     - name: subnet1
       allocationRanges:
@@ -17,7 +17,7 @@ spec:
       cidr: 172.22.0.0/24
       gateway: 172.22.0.1
   - name: internalapi 
-    dnsDomain: internalapi.aio.example.com
+    dnsDomain: internalapi.sandbox-r784v-ocp4-cluster.svc.cluster.local
     subnets:
     - name: subnet1
       allocationRanges:
@@ -29,7 +29,7 @@ spec:
       cidr: 172.17.0.0/24
       vlan: 20
   - name: tenant
-    dnsDomain: tenant.aio.example.com
+    dnsDomain: tenant.sandbox-r784v-ocp4-cluster.svc.cluster.local
     subnets:
     - name: subnet1
       allocationRanges:
@@ -41,7 +41,7 @@ spec:
       cidr: 172.19.0.0/24
       vlan: 22
   - name: storage
-    dnsDomain: storage.aio.example.com
+    dnsDomain: storage.sandbox-r784v-ocp4-cluster.svc.cluster.local
     subnets:
     - name: subnet1
       allocationRanges:
@@ -53,7 +53,7 @@ spec:
       cidr: 172.18.0.0/24
       vlan: 21
   - name: external
-    dnsDomain: external.aio.example.com
+    dnsDomain: external.sandbox-r784v-ocp4-cluster.svc.cluster.local
     subnets:
     - name: subnet1
       allocationRanges:
