@@ -64,5 +64,5 @@ spec:
       state: up
       type: ethernet
   nodeSelector:
-    kubernetes.io/hostname: ocp4-worker3.aio.example.com 
+    kubernetes.io/hostname: worker-cluster-r784v-3
     node-role.kubernetes.io/worker: ""
