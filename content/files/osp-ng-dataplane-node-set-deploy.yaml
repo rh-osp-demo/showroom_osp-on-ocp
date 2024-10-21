@@ -24,8 +24,6 @@ spec:
     - nova
     - telemetry
   preProvisioned: true
-  networkAttachments:
-  - ctlplane
   nodes:
       compute01:
         hostName: compute01
