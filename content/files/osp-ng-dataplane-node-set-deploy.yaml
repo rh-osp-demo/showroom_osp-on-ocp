@@ -42,8 +42,6 @@ spec:
           subnetName: subnet1
         - name: tenant
           subnetName: subnet1
-        - name: external
-          subnetName: subnet1
   nodeTemplate:
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
     ansible:
@@ -55,53 +53,50 @@ spec:
       ansibleVars:
          edpm_network_config_template: |
           ---
-          {% set mtu_list = [ctlplane_mtu] %}
-          {% for network in nodeset_networks %}
-          {{ mtu_list.append(lookup('vars', networks_lower[network] ~ '_mtu')) }}
-          {%- endfor %}
-          {% set min_viable_mtu = mtu_list | max %}
           network_config:
-          - type: ovs_bridge
-            name: {{ neutron_physical_bridge_name }}
-            mtu: {{ min_viable_mtu }}
-            use_dhcp: false
+          - type: interface
+            name: nic1
+            mtu: {{ ctlplane_mtu }}
             dns_servers: {{ ctlplane_dns_nameservers }}
             domain: {{ dns_search_domains }}
-            addresses:
-            - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
-            routes: {{ ctlplane_host_routes }}
-            members:
-            - type: interface
-              name: nic1
-              mtu: {{ min_viable_mtu }}
-              # force the MAC address of the bridge to this interface
-              primary: true
-          {% for network in nodeset_networks if network != 'external' %}
-            - type: vlan
-              mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
-              vlan_id: {{ lookup('vars', networks_lower[network] ~ '_vlan_id') }}
-              addresses:
-              - ip_netmask:
-                  {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
-              routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
-          {% endfor %}
-          {% if 'external' in nodeset_networks %}
-          - type: ovs_bridge
-            name: br-ex
-            dns_servers: {{ ctlplane_dns_nameservers }}
-            domain: {{ dns_search_domains }}
-            use_dhcp: false
-            members:
-            - type: interface
-              name: nic2
-              mtu: 1500
-              primary: true
             routes:
             - ip_netmask: 0.0.0.0/0
-              next_hop: {{ external_gateway_ip | default('192.168.123.1') }}
+              next_hop: {{ ctlplane_gateway_ip | default('192.168.123.1') }}
+            use_dhcp: false
             addresses:
-            - ip_netmask: {{ external_ip }}/{{ external_cidr }}
+            - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
+          {% for network in nodeset_networks %}
+          {% if network not in ["external", "tenant"] %}
+          - type: interface
+            name: nic{{ loop.index +1 }}
+            mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
+            use_dhcp: false
+            addresses:
+            - ip_netmask:
+                {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
+            routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
+          {% elif 'external_bridge' in nodeset_tags|default([]) %}
+          - type: ovs_bridge
+          {% if network == 'external' %}
+            name: {{ neutron_physical_bridge_name }}
+          {% else %}
+            name: {{ 'br-' ~ networks_lower[network] }}
           {% endif %}
+            mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
+            dns_servers: {{ ctlplane_dns_nameservers }}
+            use_dhcp: false
+            addresses:
+            - ip_netmask:
+                {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
+            routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
+            members:
+            - type: interface
+              name: nic{{loop.index + 1}}
+              mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
+              use_dhcp: false
+              primary: true
+          {% endif %}
+          {% endfor %}
          edpm_network_config_hide_sensitive_logs: false
           #
           # These vars are for the network config templates themselves and are

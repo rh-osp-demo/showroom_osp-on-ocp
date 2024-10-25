@@ -1,11 +1,11 @@
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
 metadata:
-  name: osp-enp1s0-worker-ocp4-worker1
+  name: osp-multi-nic-worker-ocp4-worker1
 spec:
   desiredState:
     interfaces:
-    - description: internalapi vlan interface
+    - description: Configuring internalapi enp3s0
       ipv4:
         address:
         - ip: 172.17.0.10
@@ -14,13 +14,11 @@ spec:
         dhcp: false
       ipv6:
         enabled: false
-      name: enp1s0.20
+      mtu: 1500
+      name: enp3s0
       state: up
-      type: vlan
-      vlan:
-        base-iface: enp1s0
-        id: 20
-    - description: storage vlan interface
+      type: ethernet
+    - description: Configuring storage enp4s0
       ipv4:
         address:
         - ip: 172.18.0.10
@@ -29,13 +27,11 @@ spec:
         dhcp: false
       ipv6:
         enabled: false
-      name: enp1s0.21
+      mtu: 1500
+      name: enp4s0
       state: up
-      type: vlan
-      vlan:
-        base-iface: enp1s0
-        id: 21
-    - description: tenant vlan interface
+      type: ethernet
+    - description: Configuring tenat enp5s0
       ipv4:
         address:
         - ip: 172.19.0.10
@@ -44,13 +40,11 @@ spec:
         dhcp: false
       ipv6:
         enabled: false
-      name: enp1s0.22
+      mtu: 1500
+      name: enp5s0
       state: up
-      type: vlan
-      vlan:
-        base-iface: enp1s0
-        id: 22
-    - description: Configuring enp1s0
+      type: ethernet
+    - description: Configuring ctlplane enp2s0
       ipv4:
         address:
         - ip: 172.22.0.10
@@ -60,7 +54,7 @@ spec:
       ipv6:
         enabled: false
       mtu: 1500
-      name: enp1s0
+      name: enp2s0
       state: up
       type: ethernet
   nodeSelector:
