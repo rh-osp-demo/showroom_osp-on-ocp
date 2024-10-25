@@ -109,7 +109,7 @@ spec:
          filesystem_store_datadir = /var/lib/glance/images/
       storage:
         storageRequest: 10G
-        storageClass: "managed-nfs-storage"
+        storageClass: "ocs-external-storagecluster-ceph-rbd"
       keystoneEndpoint: default
       glanceAPIs:
         default:
