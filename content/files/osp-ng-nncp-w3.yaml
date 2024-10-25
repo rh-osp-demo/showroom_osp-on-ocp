@@ -5,7 +5,7 @@ metadata:
 spec:
   desiredState:
     interfaces:
-    - description: Configuring internalapi enp3s0
+    - description: Configuring internalapi enp4s0
       ipv4:
         address:
         - ip: 172.17.0.12
@@ -15,10 +15,10 @@ spec:
       ipv6:
         enabled: false
       mtu: 1500
-      name: enp3s0
+      name: enp4s0
       state: up
       type: ethernet
-    - description: Configuring storage enp4s0
+    - description: Configuring storage enp5s0
       ipv4:
         address:
         - ip: 172.18.0.12
@@ -28,10 +28,10 @@ spec:
       ipv6:
         enabled: false
       mtu: 1500
-      name: enp4s0
+      name: enp5s0
       state: up
       type: ethernet
-    - description: Configuring tenat enp5s0
+    - description: Configuring tenat enp6s0
       ipv4:
         address:
         - ip: 172.19.0.12
@@ -41,10 +41,10 @@ spec:
       ipv6:
         enabled: false
       mtu: 1500
-      name: enp5s0
+      name: enp6s0
       state: up
       type: ethernet
-    - description: Configuring ctlplane enp2s0
+    - description: Configuring ctlplane enp3s0
       ipv4:
         address:
         - ip: 172.22.0.12
@@ -54,7 +54,7 @@ spec:
       ipv6:
         enabled: false
       mtu: 1500
-      name: enp2s0
+      name: enp3s0
       state: up
       type: ethernet
   nodeSelector:
