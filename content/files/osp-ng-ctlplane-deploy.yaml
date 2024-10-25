@@ -4,7 +4,7 @@ metadata:
   name: openstack-galera-network-isolation
 spec:
   secret: osp-secret
-  storageClass: ocs-storagecluster-ceph-rbd
+  storageClass: ocs-external-storagecluster-ceph-rbd
   dns:
     template:
       override:
@@ -19,9 +19,10 @@ spec:
       options:
       - key: server
         values:
-        - 192.168.123.100
+        - 172.30.0.10
       replicas: 1
   cinder:
+    enabled: false
     apiOverride:
       route: {}
     template:
@@ -91,8 +92,8 @@ spec:
       volumes:
       - name: nfs
         nfs:
-          path: /nfs/glance
-          server: 192.168.123.100
+          path: /IBM02SEV1039729_26/data01
+          server: fsf-dal1001g-fz.adn.networklayer.com
     name: r1
     region: r1
   glance:
@@ -108,7 +109,7 @@ spec:
          filesystem_store_datadir = /var/lib/glance/images/
       storage:
         storageRequest: 10G
-        storageClass: "nfs"
+        storageClass: "managed-nfs-storage"
       keystoneEndpoint: default
       glanceAPIs:
         default:

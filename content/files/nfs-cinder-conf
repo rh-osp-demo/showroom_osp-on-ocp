@@ -1,3 +1,3 @@
 [nfs]
-nas_host=192.168.123.100
-nas_share_path=/nfs/cinder
+nas_host=fsf-dal1001g-fz.adn.networklayer.com
+nas_share_path=/IBM02SEV1039729_26/data01
