@@ -81,32 +81,10 @@ spec:
         replicas: 1
       barbicanKeystoneListener:
         replicas: 1
-  extraMounts:
-  - extraVol:
-    - extraVolType: Nfs
-      mounts:
-      - mountPath: /var/lib/glance/images
-        name: nfs
-      propagation:
-      - Glance
-      volumes:
-      - name: nfs
-        nfs:
-          path: /IBM02SEV1039729_26/data01
-          server: fsf-dal1001g-fz.adn.networklayer.com
-    name: r1
-    region: r1
   glance:
     enabled: true
     template:
       databaseInstance: openstack
-      customServiceConfig: |
-         [DEFAULT]
-         enabled_backends = default_backend:file
-         [glance_store]
-         default_backend = default_backend
-         [default_backend]
-         filesystem_store_datadir = /var/lib/glance/images/
       storage:
         storageRequest: 10G
         storageClass: "ocs-external-storagecluster-ceph-rbd"
