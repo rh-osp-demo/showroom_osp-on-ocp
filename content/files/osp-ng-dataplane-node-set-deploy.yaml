@@ -62,7 +62,7 @@ spec:
             - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
           - type: interface
             name: eth2
-            mtu: {{ 'internalapi_mtu') }}
+            mtu: {{ internalapi_mtu }}
             use_dhcp: false
             addresses:
             - ip_netmask:
@@ -70,7 +70,7 @@ spec:
             routes: {{ internalapi_host_routes }}
           - type: interface
             name: eth3
-            mtu: {{ 'storage_mtu') }}
+            mtu: {{ storage_mtu }}
             use_dhcp: false
             addresses:
             - ip_netmask:
