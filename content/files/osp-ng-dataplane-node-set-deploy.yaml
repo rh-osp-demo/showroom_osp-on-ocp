@@ -66,24 +66,24 @@ spec:
             use_dhcp: false
             addresses:
             - ip_netmask:
-                {{ lookup('vars', 'internalapi_ip') }}/{{ lookup('internalapi_cidr') }}
-            routes: {{ lookup('vars', 'internalapi_host_routes') }}
+                {{ internalapi_ip }}/{{ internalapi_cidr }}
+            routes: {{ internalapi_host_routes }}
           - type: interface
             name: eth3
             mtu: {{ 'storage_mtu') }}
             use_dhcp: false
             addresses:
             - ip_netmask:
-                {{ lookup('vars', 'storage_ip') }}/{{ lookup('storage_cidr') }}
-            routes: {{ lookup('vars', 'storage_host_routes') }}
+                {{ storage_ip }}/{{ storage_cidr }}
+            routes: {{ storage_host_routes }}
           - type: interface
             name: eth4
-            mtu: {{ 'tenant_mtu') }}
+            mtu: {{ tenant_mtu }}
             use_dhcp: false
             addresses:
             - ip_netmask:
-                {{ lookup('vars', 'tenant_ip') }}/{{ lookup('tenant_cidr') }}
-            routes: {{ lookup('vars', 'tenant_host_routes') }}
+                {{ tenant_ip }}/{{ tenant_cidr }}
+            routes: {{ tenant_host_routes }}
          edpm_network_config_hide_sensitive_logs: false
           #
           # These vars are for the network config templates themselves and are
