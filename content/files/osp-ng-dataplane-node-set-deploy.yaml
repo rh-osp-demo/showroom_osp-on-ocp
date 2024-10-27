@@ -24,8 +24,6 @@ spec:
     - nova
     - telemetry
   preProvisioned: true
-  networkAttachments:
-  - ctlplane
   nodes:
       edpm-compute-0:
         hostName: edpm-compute-0.sandbox-hztz6-ocp4-cluster.svc.cluster.local
@@ -45,7 +43,7 @@ spec:
   nodeTemplate:
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
     ansible:
-      ansibleUser: root
+      ansibleUser: cloud-user
       ansibleVarsFrom:
       - prefix: subscription_manager_
         secretRef:
@@ -55,54 +53,37 @@ spec:
           ---
           network_config:
           - type: interface
-            name: nic1
+            name: eth1
             mtu: {{ ctlplane_mtu }}
             dns_servers: {{ ctlplane_dns_nameservers }}
             domain: {{ dns_search_domains }}
-            routes:
-            - ip_netmask: 0.0.0.0/0
-              next_hop: {{ ctlplane_gateway_ip | default('192.168.123.1') }}
             use_dhcp: false
             addresses:
             - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
-          {% for network in nodeset_networks %}
-          {% if network not in ["external", "tenant"] %}
           - type: interface
-            name: nic{{ loop.index +1 }}
-            mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
+            name: eth2
+            mtu: {{ 'internalapi_mtu') }}
             use_dhcp: false
             addresses:
             - ip_netmask:
-                {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
-            routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
-          {% elif 'external_bridge' in nodeset_tags|default([]) %}
-          - type: ovs_bridge
-          {% if network == 'external' %}
-            name: {{ neutron_physical_bridge_name }}
-          {% else %}
-            name: {{ 'br-' ~ networks_lower[network] }}
-          {% endif %}
-            mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
-            dns_servers: {{ ctlplane_dns_nameservers }}
+                {{ lookup('vars', 'internalapi_ip') }}/{{ lookup('internalapi_cidr') }}
+            routes: {{ lookup('vars', 'internalapi_host_routes') }}
+          - type: interface
+            name: eth3
+            mtu: {{ 'storage_mtu') }}
             use_dhcp: false
             addresses:
             - ip_netmask:
-                {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
-            routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
-            members:
-            - type: interface
-              name: nic{{loop.index + 1}}
-              mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
-              use_dhcp: false
-              primary: true
-          {% endif %}
-          {% endfor %}
-         edpm_network_config_os_net_config_mappings:
-          edpm-compute-0:
-            nic1: "ae:83:50:c2:24:a0"
-            nic2: "d6:4a:3a:bc:39:96"
-            nic3: "76:77:fa:76:7a:9b"
-            nic4: "22:12:50:fa:6e:f6"
+                {{ lookup('vars', 'storage_ip') }}/{{ lookup('storage_cidr') }}
+            routes: {{ lookup('vars', 'storage_host_routes') }}
+          - type: interface
+            name: eth4
+            mtu: {{ 'tenant_mtu') }}
+            use_dhcp: false
+            addresses:
+            - ip_netmask:
+                {{ lookup('vars', 'tenant_ip') }}/{{ lookup('tenant_cidr') }}
+            routes: {{ lookup('vars', 'tenant_host_routes') }}
          edpm_network_config_hide_sensitive_logs: false
           #
           # These vars are for the network config templates themselves and are
