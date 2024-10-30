@@ -8,9 +8,6 @@ metadata:
 spec:
   secret: osp-secret
   storageClass: ocs-storagecluster-ceph-rbd
-  tls:
-    podLevel:
-      enabled: false
   dns:
     template:
       override:
