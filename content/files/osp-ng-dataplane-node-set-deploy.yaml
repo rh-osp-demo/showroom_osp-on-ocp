@@ -36,10 +36,13 @@ spec:
           fixedIP: 172.22.0.100
         - name: internalapi
           subnetName: subnet1
+          fixedIP: 172.17.0.100
         - name: storage
           subnetName: subnet1
+          fixedIP: 172.18.0.100
         - name: tenant
           subnetName: subnet1
+          fixedIP: 172.19.0.100
   nodeTemplate:
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
     ansible:
