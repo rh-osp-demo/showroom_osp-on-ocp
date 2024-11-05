@@ -58,5 +58,5 @@ spec:
       state: up
       type: ethernet
   nodeSelector:
-    kubernetes.io/hostname: ocp4-worker2.aio.example.com 
+    kubernetes.io/hostname: control-plane-cluster-f7rd5-2 
     node-role.kubernetes.io/worker: ""
