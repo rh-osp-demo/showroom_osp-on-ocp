@@ -238,12 +238,14 @@ spec:
       ovnDBCluster:
         ovndbcluster-nb:
           dbType: NB
-          storageRequest: 10G
           networkAttachment: internalapi
+          storageRequest: 10G
+          replicas: 3
         ovndbcluster-sb:
           dbType: SB
-          storageRequest: 10G
           networkAttachment: internalapi
+          storageRequest: 10G
+          replicas: 3
       ovnController:
         networkAttachment: tenant
   placement:
