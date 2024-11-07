@@ -58,5 +58,5 @@ spec:
       state: up
       type: ethernet
   nodeSelector:
-    kubernetes.io/hostname: control-plane-cluster-f7rd5-1
+    kubernetes.io/hostname: control-plane-cluster-UUID-1
     node-role.kubernetes.io/worker: ""

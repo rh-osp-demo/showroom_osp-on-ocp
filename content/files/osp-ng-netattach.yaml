@@ -10,6 +10,7 @@ spec:
       "name": "ctlplane",
       "type": "macvlan",
       "master": "enp3s0",
+    	"mode": "bridge",
       "ipam": {
         "type": "whereabouts",
         "range": "172.22.0.0/24",
@@ -29,7 +30,8 @@ spec:
       "cniVersion": "0.3.1",
       "name": "internalapi",
       "type": "macvlan",
-      "master": "enp4s0", 
+      "master": "enp4s0",
+    	"mode": "bridge",
       "ipam": { 
         "type": "whereabouts", 
         "range": "172.17.0.0/24",
@@ -49,7 +51,8 @@ spec:
       "cniVersion": "0.3.1",
       "name": "storage",
       "type": "macvlan",
-      "master": "enp5s0", 
+      "master": "enp5s0",
+    	"mode": "bridge", 
       "ipam": {
         "type": "whereabouts",
         "range": "172.18.0.0/24",
@@ -70,6 +73,7 @@ spec:
       "name": "tenant",
       "type": "macvlan",
       "master": "enp6s0",
+    	"mode": "bridge",
       "ipam": {
         "type": "whereabouts",
         "range": "172.19.0.0/24",

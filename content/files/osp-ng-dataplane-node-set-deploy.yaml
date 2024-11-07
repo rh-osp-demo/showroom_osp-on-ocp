@@ -26,7 +26,7 @@ spec:
   preProvisioned: true
   nodes:
       edpm-compute-0:
-        hostName: edpm-compute-0.sandbox-hztz6-ocp4-cluster.svc.cluster.local
+        hostName: edpm-compute-0.sandbox-UUID-ocp4-cluster.svc.cluster.local
         ansible:
           ansibleHost: 172.22.0.100
         networks:
