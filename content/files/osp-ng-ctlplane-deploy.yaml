@@ -243,7 +243,7 @@ spec:
           replicas: 1
         ovndbcluster-sb:
           dbType: SB
-          networkAttachment: internalapi_ovnsdb
+          networkAttachment: internalapiovnsdb
           storageRequest: 10G
           replicas: 1
       ovnController:
