@@ -53,47 +53,67 @@ spec:
           name: subscription-manager
       ansibleVars:
          edpm_network_config_template: |
+           ---
+           {% set mtu_list = [ctlplane_mtu] %}
+           {% for network in nodeset_networks %}
+           {{ mtu_list.append(lookup('vars', networks_lower[network] ~ '_mtu')) }}
+           {%- endfor %}
+           {% set min_viable_mtu = mtu_list | max %}
+           network_config:
+           - type: ovs_bridge
+             name: {{ neutron_physical_bridge_name }}
+             mtu: {{ min_viable_mtu }}
+             use_dhcp: false
+             dns_servers: {{ ctlplane_dns_nameservers }}
+             domain: {{ dns_search_domains }}
+             addresses:
+             - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
+             routes: {{ ctlplane_host_routes }}
+             members:
+            - type: interface
+              name: eth1
+              mtu: {{ min_viable_mtu }}
+              # force the MAC address of the bridge to this interface
+              primary: true
+            - type: interface
+              name: eth2
+              mtu: {{ internalapi_mtu }}
+              use_dhcp: false
+              addresses:
+              - ip_netmask:
+                  {{ internalapi_ip }}/{{ internalapi_cidr }}
+              routes: {{ internalapi_host_routes }}
+            - type: interface
+              name: eth3
+              mtu: {{ storage_mtu }}
+              use_dhcp: false
+              addresses:
+              - ip_netmask:
+                  {{ storage_ip }}/{{ storage_cidr }}
+              routes: {{ storage_host_routes }}
+            - type: interface
+              name: eth4
+              mtu: {{ tenant_mtu }}
+              use_dhcp: false
+              addresses:
+              - ip_netmask:
+                  {{ tenant_ip }}/{{ tenant_cidr }}
+              routes: {{ tenant_host_routes }}     
           ---
-          network_config:
-          - type: interface
-            name: eth1
-            mtu: {{ ctlplane_mtu }}
-            dns_servers: {{ ctlplane_dns_nameservers }}
-            domain: {{ dns_search_domains }}
-            use_dhcp: false
-            addresses:
-            - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
-          - type: interface
-            name: eth2
-            mtu: {{ internalapi_mtu }}
-            use_dhcp: false
-            addresses:
-            - ip_netmask:
-                {{ internalapi_ip }}/{{ internalapi_cidr }}
-            routes: {{ internalapi_host_routes }}
-          - type: interface
-            name: eth3
-            mtu: {{ storage_mtu }}
-            use_dhcp: false
-            addresses:
-            - ip_netmask:
-                {{ storage_ip }}/{{ storage_cidr }}
-            routes: {{ storage_host_routes }}
-          - type: interface
-            name: eth4
-            mtu: {{ tenant_mtu }}
-            use_dhcp: false
-            addresses:
-            - ip_netmask:
-                {{ tenant_ip }}/{{ tenant_cidr }}
-            routes: {{ tenant_host_routes }}
          edpm_network_config_hide_sensitive_logs: false
           #
           # These vars are for the network config templates themselves and are
           # considered EDPM network defaults (for all computes).
+         neutron_physical_bridge_name: br-osp
+         edpm_ovn_bridge_mappings: datacentre:br-osp
+         edpm_ovn_bridge: br-int
+         edpm_ovn_encap_type: geneve
+         ovn_monitor_all: true
+         edpm_ovn_remote_probe_interval: 60000
+         edpm_ovn_ofctrl_wait_before_clear: 8000
          ctlplane_host_routes: []
          ctlplane_subnet_cidr: 24
-         dns_search_domains: sandbox-2l8fm-ocp4-cluster.svc.cluster.local
+         dns_search_domains: sandbox-UUID-ocp4-cluster.svc.cluster.local
          ctlplane_mtu: 1500
          external_mtu: 1500
          external_cidr: '24'
@@ -107,7 +127,6 @@ spec:
          tenant_mtu: 1500
          tenant_cidr: '24'
          tenant_host_routes: []
-         neutron_physical_bridge_name: br-osp
          # name of the first network interface on the compute node:
          neutron_public_interface_name: eth0
          # edpm_nodes_validation
