@@ -70,36 +70,35 @@ spec:
              - ip_netmask: {{ ctlplane_ip }}/{{ ctlplane_cidr }}
              routes: {{ ctlplane_host_routes }}
              members:
-            - type: interface
-              name: eth1
-              mtu: {{ min_viable_mtu }}
-              # force the MAC address of the bridge to this interface
-              primary: true
-            - type: interface
-              name: eth2
-              mtu: {{ internalapi_mtu }}
-              use_dhcp: false
-              addresses:
-              - ip_netmask:
-                  {{ internalapi_ip }}/{{ internalapi_cidr }}
-              routes: {{ internalapi_host_routes }}
-            - type: interface
-              name: eth3
-              mtu: {{ storage_mtu }}
-              use_dhcp: false
-              addresses:
-              - ip_netmask:
-                  {{ storage_ip }}/{{ storage_cidr }}
-              routes: {{ storage_host_routes }}
-            - type: interface
-              name: eth4
-              mtu: {{ tenant_mtu }}
-              use_dhcp: false
-              addresses:
-              - ip_netmask:
-                  {{ tenant_ip }}/{{ tenant_cidr }}
-              routes: {{ tenant_host_routes }}     
-          ---
+             - type: interface
+               name: eth1
+               mtu: {{ min_viable_mtu }}
+               # force the MAC address of the bridge to this interface
+               primary: true
+           - type: interface
+             name: eth2
+             mtu: {{ internalapi_mtu }}
+             use_dhcp: false
+             addresses:
+             - ip_netmask:
+                 {{ internalapi_ip }}/{{ internalapi_cidr }}
+             routes: {{ internalapi_host_routes }}
+           - type: interface
+             name: eth3
+             mtu: {{ storage_mtu }}
+             use_dhcp: false
+             addresses:
+             - ip_netmask:
+                 {{ storage_ip }}/{{ storage_cidr }}
+             routes: {{ storage_host_routes }}
+           - type: interface
+             name: eth4
+             mtu: {{ tenant_mtu }}
+             use_dhcp: false
+             addresses:
+             - ip_netmask:
+                 {{ tenant_ip }}/{{ tenant_cidr }}
+             routes: {{ tenant_host_routes }}
          edpm_network_config_hide_sensitive_logs: false
           #
           # These vars are for the network config templates themselves and are
