@@ -115,7 +115,6 @@ spec:
          edpm_nodes_validation_validate_gateway_icmp: false
          gather_facts: false
          enable_debug: false
-         edpm_sshd_allowed_ranges: ['172.22.0.0/16']
          edpm_podman_buildah_login: true
          edpm_container_registry_logins:
           registry.redhat.io:
