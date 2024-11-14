@@ -396,6 +396,8 @@ spec:
       octaviaAPI:
         replicas: 1
       secret: osp-secret
+  redis:
+    enabled: false
   designate:
     enabled: false
     apiOverride:
@@ -427,6 +429,8 @@ spec:
         networkAttachments:
           - designate
       designateBackendbind9:
-        replicas: 0
+        replicas: 1
+        storageClass: local-storage
+        storageRequest: 10G
         networkAttachments:
           - designate
