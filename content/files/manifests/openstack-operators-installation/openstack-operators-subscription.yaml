@@ -13,4 +13,3 @@ spec:
   name: openstack-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: openstack-operator.v1.0.0
