@@ -50,7 +50,7 @@ Map the Compute nodes to the Compute cell that they are connected to:
 
 [source,bash,role=execute]
 ----
-oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
+oc rsh -n openstack nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
 ----
 
 Access to the openstackclient pod
