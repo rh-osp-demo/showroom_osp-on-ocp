@@ -1,0 +1,336 @@
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openstack
+  namespace: openstack-operators
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/barbican-operator.openstack-operators: ""
+  name: barbican-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: barbican-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: barbican-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/cinder-operator.openstack-operators: ""
+  name: cinder-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: cinder-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: cinder-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/designate-operator.openstack-operators: ""
+  name: designate-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: designate-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: designate-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/glance-operator.openstack-operators: ""
+  name: glance-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: glance-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: glance-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/heat-operator.openstack-operators: ""
+  name: heat-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: heat-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: heat-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/horizon-operator.openstack-operators: ""
+  name: horizon-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: horizon-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: horizon-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/infra-operator.openstack-operators: ""
+  name: infra-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: infra-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: infra-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/ironic-operator.openstack-operators: ""
+  name: ironic-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: ironic-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ironic-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/keystone-operator.openstack-operators: ""
+  name: keystone-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: keystone-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: keystone-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/manila-operator.openstack-operators: ""
+  name: manila-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: manila-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: manila-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/mariadb-operator.openstack-operators: ""
+  name: mariadb-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: mariadb-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: mariadb-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/neutron-operator.openstack-operators: ""
+  name: neutron-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: neutron-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: neutron-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/nova-operator.openstack-operators: ""
+  name: nova-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: nova-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: nova-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/octavia-operator.openstack-operators: ""
+  name: octavia-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: octavia-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: octavia-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/openstack-ansibleee-operator.openstack-operators: ""
+  name: openstack-ansibleee-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: openstack-ansibleee-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: openstack-ansibleee-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/openstack-baremetal-operator.openstack-operators: ""
+  name: openstack-baremetal-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: openstack-baremetal-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: openstack-baremetal-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/openstack-operator.openstack-operators: ""
+  name: openstack-operator
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: openstack-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: openstack-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/ovn-operator.openstack-operators: ""
+  name: ovn-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: ovn-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ovn-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/placement-operator.openstack-operators: ""
+  name: placement-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: placement-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: placement-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/rabbitmq-cluster-operator.openstack-operators: ""
+  name: rabbitmq-cluster-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: rabbitmq-cluster-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: rabbitmq-cluster-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/swift-operator.openstack-operators: ""
+  name: swift-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: swift-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: swift-operator.v1.0.3
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/telemetry-operator.openstack-operators: ""
+  name: telemetry-operator-stable-v1.0-redhat-operators-openshift-marketplace
+  namespace: openstack-operators
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Manual
+  name: telemetry-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: telemetry-operator.v1.0.3

@@ -1,0 +1,25 @@
+= Red Hat Openstack Services on OpenShift updates lab
+
+In this lab, you will use the following infrastructure:
+
+* A 3 OCP controller + 3 OCP workers nodes 4.16 OCP cluster
+* A bastion host to access to the OCP environment
+* A RHEL 9.4 virtualised compute host
+
+In this lab we will first force the installation of an older version of RHOSO to install it to update it to the latest version
+
+In this lab, you will cover the following topics:
+
+* xref:prereqs-updates.adoc[Perform Prerequisite Operations]
+* xref:install-operators-updates.adoc[Install the Red Hat OpenStack Platform Service Operators]
+* xref:secure-updates.adoc[Configure Secure Access for OpenStack Services]
+* xref:network-isolation-updates.adoc[Prepare OCP for OpenStack Network Isolation]
+* xref:create-cp-updates.adoc[Create the Control Plane]
+* xref:create-dp-updates.adoc[Create the Data plane]
+* xref:access.adoc[Access OpenStack]
+* xref:update-rhoso.adoc[Update your RHOSO deployment to the latest version]
+
+Within the lab environment, you will be able to copy and paste the specified commands into the CLI.
+For some steps you may also need to edit some of the commands from the  instructions.
+
+*Be sure to review all commands carefully both for functionality and syntax!*

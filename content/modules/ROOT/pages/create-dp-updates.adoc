@@ -1,0 +1,238 @@
+= Configure the Data Plane
+
+Using a preconfigured yaml file(*files/osp-ng-dataplane-netconfig.yaml*) we will configure the topology for each data plane network.
+
+Change directory to the files:
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files
+----
+
+Apply the *network confguration*:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-dataplane-netconfig.yaml
+----
+
+== Create VM for Dataplane
+
+Log out from the bastion so that we go back to the hypervisor machine:
+
+[source,bash,role=execute]
+----
+logout
+----
+
+.Sample Output
+----
+[lab-user@hypervisor ~]#
+----
+
+Create the *RHEL compute* on lab-user (*hypervisor*) server:
+
+[source,bash,role=execute]
+----
+sudo -i
+cd /var/lib/libvirt/images
+cp rhel-9.4-x86_64-kvm.qcow2 rhel9-guest.qcow2
+qemu-img info rhel9-guest.qcow2
+qemu-img resize rhel9-guest.qcow2 +90G
+chown -R qemu:qemu rhel9-*.qcow2
+virt-customize -a rhel9-guest.qcow2 --run-command 'growpart /dev/sda 4'
+virt-customize -a rhel9-guest.qcow2 --run-command 'xfs_growfs /'
+virt-customize -a rhel9-guest.qcow2 --root-password password:redhat
+virt-customize -a rhel9-guest.qcow2 --run-command 'systemctl disable cloud-init'
+virt-customize -a /var/lib/libvirt/images/rhel9-guest.qcow2 --ssh-inject root:file:/root/.ssh/id_rsa.pub
+virt-customize -a /var/lib/libvirt/images/rhel9-guest.qcow2 --selinux-relabel
+qemu-img create -f qcow2 -F qcow2 -b /var/lib/libvirt/images/rhel9-guest.qcow2 /var/lib/libvirt/images/osp-compute-0.qcow2
+virt-install --virt-type kvm --ram 16384 --vcpus 4 --cpu=host-passthrough --os-variant rhel8.4 --disk path=/var/lib/libvirt/images/osp-compute-0.qcow2,device=disk,bus=virtio,format=qcow2 --network network:ocp4-provisioning --network network:ocp4-net --boot hd,network --noautoconsole --vnc --name osp-compute0 --noreboot
+virsh start osp-compute0
+----
+
+=== Login to the Compute and Verify
+
+Verify IP from 192.168.123.0/24
+
+[source,bash,role=execute]
+----
+watch virsh domifaddr osp-compute0 --source agent
+----
+
+.Sample Output
+[source,bash]
+----
+Every 2.0s: virsh domifaddr osp-compute0 --source agent                                                                                                 hypervisor: Wed Apr 17 07:03:13 2024
+
+ Name       MAC address          Protocol     Address
+-------------------------------------------------------------------------------
+ lo         00:00:00:00:00:00    ipv4         127.0.0.1/8
+ -          -                    ipv6         ::1/128
+ eth0       52:54:00:c0:0a:26    ipv4         172.22.0.202/24
+ -          -                    ipv6         fe80::16:d083:92f4:f201/64
+ eth1       52:54:00:e5:ce:09    ipv4         192.168.123.61/24
+ -          -                    ipv6         fe80::bfc0:e5db:a655:729f/64
+----
+
+(CTRL + C to continue)
+
+[source,bash,role=execute]
+----
+virsh domifaddr osp-compute0 --source agent
+----
+
+Use the IP assigned to `eth1` above in the next step.
+
+=== Configure Ethernet Devices on New Compute
+
+SSH to the new VM.
+There is no password.
+
+[source,bash,role=execute]
+----
+ssh root@192.168.123.61
+----
+
+[source,bash,role=execute]
+----
+sudo hostnamectl set-hostname edpm-compute-0.aio.example.com
+nmcli co delete 'Wired connection 1'
+nmcli con add con-name "static-eth0" ifname eth0 type ethernet ip4 172.22.0.100/24 ipv4.dns "172.22.0.89"
+nmcli con up "static-eth0"
+nmcli co delete 'Wired connection 2'
+nmcli con add con-name "static-eth1" ifname eth1 type ethernet ip4 192.168.123.61/24 ipv4.dns "192.168.123.100" ipv4.gateway "192.168.123.1"
+nmcli con up "static-eth1"
+----
+
+And log off VM
+
+[source,bash,role=execute]
+----
+logout
+----
+
+Snapshot the Compute Server
+
+[source,bash,role=execute]
+----
+virsh snapshot-create-as osp-compute0 preprovisioned
+----
+
+Set SSH key
+
+[source,bash,role=execute]
+----
+sudo -i
+scp /root/.ssh/id_rsa root@192.168.123.100:/root/.ssh/id_rsa_compute
+scp /root/.ssh/id_rsa.pub root@192.168.123.100:/root/.ssh/id_rsa_compute.pub
+----
+
+WARNING: This might error initially because of unknown hosts file.
+Retry to make sure both files are copied.
+
+=== Finish the Dataplane
+
+Connect to the *bastion* server (Remember that bastion password is *redhat*):
+
+[source,bash,role=execute]
+----
+sudo -i
+ssh root@192.168.123.100
+----
+
+.Sample Output
+----
+[root@ocp4-bastion ~] #
+----
+
+Change to Lab Repo
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files
+----
+
+Create Secret for ansible connection and nova migration of virtual machines
+
+[source,bash,role=execute]
+----
+oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/root/.ssh/id_rsa_compute.pub --from-file=ssh-privatekey=/root/.ssh/id_rsa_compute --from-file=ssh-publickey=/root/.ssh/id_rsa_compute.pub -n openstack -o yaml | oc apply -f-
+ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
+oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
+----
+
+Create a secret for the subscription manager and a secret for the Red Hat registry:
+
+[source,bash,role=execute]
+----
+echo -n "your_username" | base64
+echo -n "your_password" | base64
+----
+
+[source,bash,role=execute]
+----
+oc apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: subscription-manager
+data:
+  username: <base64 encoded subscription-manager username>
+  password: <base64 encoded subscription-manager password>
+EOF
+----
+
+Deploy the Dataplane
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-dataplane-node-set-deploy.yaml
+oc apply -f osp-ng-dataplane-deployment.yaml
+----
+
+You can view the Ansible logs while the deployment executes:
+
+[source,bash,role=execute]
+----
+oc logs -l app=openstackansibleee -f --max-log-requests 10
+----
+
+.Sample Output
+----
+(...)
+PLAY RECAP *********************************************************************
+edpm-compute-0             : ok=53   changed=26   unreachable=0    failed=0    skipped=54   rescued=0    ignored=0
+----
+
+Ctrl-C to exit.
+
+Verify that the data plane is deployed.
+
+NOTE: This takes several minutes.
+
+[source,bash,role=execute]
+----
+oc get openstackdataplanedeployment
+----
+
+Repeat the query until you see the following:
+
+.Sample Output
+----
+NAME                  STATUS   MESSAGE
+openstack-edpm-ipam   True     Setup Complete
+----
+
+[source,bash,role=execute]
+----
+oc get openstackdataplanenodeset
+----
+
+Repeat the query until you see the following:
+
+.Sample Output
+----
+NAME                  STATUS   MESSAGE
+openstack-edpm-ipam   True     NodeSet Ready
+----

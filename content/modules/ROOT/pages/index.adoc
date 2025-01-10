@@ -7,6 +7,7 @@ You have four installation options:
 
 * xref:connected.adoc[Install RHOSO using CDN - Connected environment]
 * xref:disconnected.adoc[Install RHOSO using Satellite and Quay - Disconnected Environment]
+* xref:updates.adoc[Install RHOSO 18.0.2 and update it to 18.0.3]
 * xref:gitops.adoc[Install and discover RHOSO using Gitops ArgoCD]
 * xref:breakfix.adoc[Install and discover RHOSO using Gitops ArgoCD. Break & Fix]
 
