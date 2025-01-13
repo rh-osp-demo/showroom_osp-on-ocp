@@ -5,6 +5,5 @@ metadata:
 spec:
   nodeSets:
     - openstack-edpm-ipam
-    - scale-out-provisioned
   servicesOverride:
     - update

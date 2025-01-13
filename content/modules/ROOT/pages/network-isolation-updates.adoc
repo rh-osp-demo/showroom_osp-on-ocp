@@ -69,15 +69,7 @@ Configure a *L2Advertisement* resource which will define which node advertises a
 oc apply -f osp-ng-metal-lb-l2-advertisements.yaml
 ----
 
-If your cluster is RHOCP 4.14 or later and it has OVNKubernetes as the network back end, then you must enable global forwarding so that MetalLB can work on a secondary network interface.
-
-Check the network back end used by your cluster:
-
-[source,bash,role=execute]
-----
-oc get network.operator cluster --output=jsonpath='{.spec.defaultNetwork.type}'
-----
-If the back end is OVNKubernetes, then run the following command to enable global IP forwarding:
+You must enable global forwarding so that MetalLB can work on a secondary network interface.
 
 [source,bash,role=execute]
 ----

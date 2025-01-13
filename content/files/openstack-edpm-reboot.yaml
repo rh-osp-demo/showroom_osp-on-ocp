@@ -6,11 +6,9 @@ metadata:
 spec:
   nodeSets:
     - openstack-edpm-ipam
-    - scale-out-provisioned
   servicesOverride: 
   - reboot-os
   ansibleExtraVars: 
     edpm_reboot_strategy: force
   ansibleLimit: 
     - edpm-compute-0.aio.example.com
-    - edpm-compute-1.ctlplane.aio.example.com

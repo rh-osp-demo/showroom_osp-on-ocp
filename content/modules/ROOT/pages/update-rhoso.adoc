@@ -2,9 +2,10 @@
 
 ## Preparing for a minor update
 
-In this lab we will perform an update of *edpm-compute0* and *edpm-compute1* compute node. We need to create 2 files include a set of OpenStackDataPlaneNodeSet custom resources (CRs):
-. *openstack-edpm-update-ovn.yaml* - You use this file to update your OVN services. You must update OVN services before the OpenStack Operator can begin the automatic update of the remaining control plane services.
-. *openstack-edpm-update-services.yaml*- You use this file to update the remaining control plane packages, services, and container images on the data plane nodes.
+. In this lab we will perform an update of *edpm-compute0* and *edpm-compute1* compute node. We need to create 2 files include a set of OpenStackDataPlaneNodeSet custom resources (CRs):
++
+* *openstack-edpm-update-ovn.yaml* - You use this file to update your OVN services. You must update OVN services before the OpenStack Operator can begin the automatic update of the remaining control plane services.
+* *openstack-edpm-update-services.yaml*- You use this file to update the remaining control plane packages, services, and container images on the data plane nodes.
 
 ## Update the OpenStack Operator
 In this lab we have installed the OpenStack operators using manually approved. So, to manually approving a pending Operator update, follow these steps:
@@ -13,17 +14,52 @@ In this lab we have installed the OpenStack operators using manually approved. S
 ----
 oc get csv -n openstack-operators
 ----
-. Manually approve the update:
+
+.Sample Output
+----
+oc get csv -n openstack-operators
+NAME                                    DISPLAY                        VERSION               REPLACES                              PHASE
+barbican-operator.v1.0.3                Barbican Operator              1.0.3                 barbican-operator.v1.0.2              Succeeded
+cinder-operator.v1.0.3                  Cinder Operator                1.0.3                 cinder-operator.v1.0.2                Succeeded
+designate-operator.v1.0.3               Designate Operator             1.0.3                 designate-operator.v1.0.2             Succeeded
+glance-operator.v1.0.3                  Glance Operator                1.0.3                 glance-operator.v1.0.2                Succeeded
+heat-operator.v1.0.3                    Heat Operator                  1.0.3                 heat-operator.v1.0.2                  Succeeded
+horizon-operator.v1.0.3                 Horizon Operator               1.0.3                 horizon-operator.v1.0.2               Succeeded
+infra-operator.v1.0.3                   OpenStack Infra                1.0.3                 infra-operator.v1.0.2                 Succeeded
+ironic-operator.v1.0.3                  Ironic Operator                1.0.3                 ironic-operator.v1.0.2                Succeeded
+keystone-operator.v1.0.3                Keystone Operator              1.0.3                 keystone-operator.v1.0.2              Succeeded
+manila-operator.v1.0.3                  Manila Operator                1.0.3                 manila-operator.v1.0.2                Succeeded
+mariadb-operator.v1.0.3                 MariaDB Operator               1.0.3                 mariadb-operator.v1.0.2               Succeeded
+metallb-operator.v4.16.0-202412170135   MetalLB Operator               4.16.0-202412170135                                         Succeeded
+neutron-operator.v1.0.3                 Neutron Operator               1.0.3                 neutron-operator.v1.0.2               Succeeded
+nova-operator.v1.0.3                    Nova Operator                  1.0.3                 nova-operator.v1.0.2                  Succeeded
+octavia-operator.v1.0.3                 Octavia Operator               1.0.3                 octavia-operator.v1.0.2               Succeeded
+openstack-ansibleee-operator.v1.0.3     OpenStackAnsibleEE             1.0.3                 openstack-ansibleee-operator.v1.0.2   Succeeded
+openstack-baremetal-operator.v1.0.3     OpenStack Baremetal Operator   1.0.3                 openstack-baremetal-operator.v1.0.2   Succeeded
+openstack-operator.v1.0.3               OpenStack                      1.0.3                 openstack-operator.v1.0.2             Succeeded
+ovn-operator.v1.0.3                     OVN Operator                   1.0.3                 ovn-operator.v1.0.2                   Succeeded
+placement-operator.v1.0.3               Placement Operator             1.0.3                 placement-operator.v1.0.2             Succeeded
+rabbitmq-cluster-operator.v1.0.3        RabbitMQ Cluster Operator      1.0.3                 rabbitmq-cluster-operator.v1.0.2      Succeeded
+swift-operator.v1.0.3                   Swift operator                 1.0.3                 swift-operator.v1.0.2                 Succeeded
+telemetry-operator.v1.0.3               Telemetry Operator             1.0.3                 telemetry-operator.v1.0.2             Succeeded
+----
+Manually approve the update:
 [source,bash,role=execute]
 ----
 oc get installplan -n openstack-operators
 ----
-. Find and approve the pending InstallPlan:
+.Sample Output
+----
+NAME            CSV                      APPROVAL   APPROVED
+install-2ljg6   manila-operator.v1.0.5   Manual     false
+install-7dgfd   manila-operator.v1.0.3   Manual     true
+----
+Find and approve the pending InstallPlan:
 [source,bash,role=execute]
 ----
 oc patch installplan <installplan-name> -n openstack-operators --type merge --patch '{"spec": {"approved": true}}'
 ----
-This will approve the Operator update, and OpenShift will proceed with the installation or update of the Operator.
+This will approve the Operator update, and OpenShift will proceed with the update of the OpenStack Operators.
 
 ### Explore the file OpenStackDataPlaneNodeSet to update OVN service
 
@@ -32,7 +68,7 @@ In the bastion terminal, make sure that you are in lab yamls directory:
 ----
 cd labrepo/content/files
 ----
-Visualize the file *openstack-edpm-update-ovn.yaml* to understand better the *servicesOverride* functionality to apply just the *ovn* *OpenStackDataplaneService:
+Visualize the file *openstack-edpm-update-ovn.yaml* to understand better the *servicesOverride* functionality to apply just the *ovn* *OpenStackDataplaneService*:
 [source,bash,role=execute]
 ----
 cat openstack-edpm-update-ovn.yaml
@@ -47,7 +83,6 @@ metadata:
 spec:
   nodeSets:
     - openstack-edpm-ipam
-    - scale-out-provisioned
   servicesOverride:
     - ovn
 ----
@@ -70,7 +105,6 @@ metadata:
 spec:
   nodeSets:
     - openstack-edpm-ipam
-    - scale-out-provisioned
   servicesOverride:
     - update
 ----
@@ -84,47 +118,65 @@ To update your Red Hat OpenStack Services on OpenShift (RHOSO) 18.0 environment 
 . Wait for the OpenStack Operator to complete the automatic update of the remaining control plane packages, services, and container images.
 . Update the remaining services on the data plane.
 
-### Updating OVN services on the control plane 
+### Updating OVN services on the control plane
+
+Get the *OpenStackVersion* to identify the target version to be installed:
+
+[source,bash,role=execute]
+----
+oc get openstackversion -n openstack
+----
+.Sample Output
+----
+NAME                                 TARGET VERSION      AVAILABLE VERSION   DEPLOYED VERSION
+openstack-galera-network-isolation   18.0.2-20240923.2   18.0.3-20241126.2   18.0.2-20240923.2
+----
 
 Update the target version in the *OpenStackVersion* custom resource (CR) to point to the version that you want to install. After you update the target version, the OVN service update on the control plane begins automatically.
 
 . Create a patch file for the OpenStackVersion CR on your workstation, for example, *openstackversionpatch.yaml*
++
 [source,bash,role=execute]
 ----
 cat <<EOF >openstackversionpatch.yaml
    "spec": {
-     "targetVersion": 1.0.1
+     "targetVersion": 18.0.3-20241126.2
      }
 EOF
-
-Replace targetVersion field with the target version you want to install, for example, 1.0.1
 ----
+
+Note: Replace targetVersion field with the target version you want to install, for example, 18.0.3-20241126.2
+
 . Patch the OpenStackVersion CR:
++
 [source,bash,role=execute]
 ----
-oc patch openstack-galera-network-isolation --type=merge --patch-file openstackversionpatch.yaml
-EOF
+oc patch openstackversion openstack-galera-network-isolation --type=merge --patch-file openstackversionpatch.yaml
 ----
+
 . Verify that the OVN services are updated on the control plane
++
 [source,bash,role=execute]
 ----
 oc wait openstackversion openstack-galera-network-isolation --for=condition=MinorUpdateOVNControlplane  --timeout=20m
-EOF
 ----
 
 ### Updating OVN services on the data plane
-. To update OVN services on the data plane, create an OpenStackDataPlaneDeployment custom resource (CR) with the openstack-edpm-update-ovn.yaml file:
+. To update OVN services on the data plane, create an OpenStackDataPlaneDeployment custom resource (CR) with the *openstack-edpm-update-ovn.yaml* file:
++
 [source,bash,role=execute]
 ----
 oc create -f openstack-edpm-update-ovn.yaml
 ----
 . Verify that the data plane update deployment succeeded:
++
 [source,bash,role=execute]
 ----
 oc wait openstackversion openstack-galera-network-isolation --for=condition=MinorUpdateOVNDataplane --timeout=20m
 ----
 
-Check if the update deployment is completed
+. Check if the update deployment is completed
++
 . Sample output
 [source,bash]
 ----
@@ -137,22 +189,26 @@ edpm-deployment-ipam-ovn-update              True  Setup Complete
 When the OVN service is updated on the control plane and data plane, and the OpenStack Operator has completed the automatic update of the remaining control plane packages, services, and container images, you must update the remaining services on the data plane
 
 . Wait until all control plane services are updated:
++
 [source,bash,role=execute]
 ----
 oc wait openstackversion openstack-galera-network-isolation --for=condition=MinorUpdateControlplane --timeout=20m
 ----
 . To update the remaining services on the data plane, create an OpenStackDataPlaneDeployment custom resource (CR) with the openstack-edpm-update-services.yaml file:
++
 [source,bash,role=execute]
 ----
 oc create -f openstack-edpm-update-services.yaml
 ----
 . Verify that the data plane update deployment succeeded:
++
 [source,bash,role=execute]
 ----
 oc wait openstackversion openstack-galera-network-isolation --for=condition=MinorUpdateDataplane --timeout=20m
 ----
 
-Check if the update deployment is completed
+. Check if the update deployment is completed
++
 . Sample output
 [source,bash]
 ----
@@ -168,10 +224,14 @@ You can reboot your Compute nodes any time after you complete the minor update. 
 To ensure minimal downtime of instances in your Red Hat OpenStack Services on OpenShift (RHOSO) environment, you should migrate the instances from the Compute node that you need to reboot.
 
 . Review and understand the *OpenStackDataPlaneDeployment* to reboot the nodes:
-[source,bash]
++
+[source,bash,role=execute]
 ----
 cat openstack-edpm-reboot.yaml
+----
 
+[,console]
+----
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneDeployment
 metadata:
@@ -180,16 +240,22 @@ metadata:
 spec:
   nodeSets:
     - openstack-edpm-ipam
-    - scale-out-provisioned
   servicesOverride: 
   - reboot-os
   ansibleExtraVars: 
     edpm_reboot_strategy: force
   ansibleLimit: 
     - edpm-compute-0.aio.example.com
-    - edpm-compute-1.ctlplane.aio.example.com
+----
+
+. Apply the *openstack-edpm-ipam-reboot.yaml* OpenStackDataPlaneDeployment:
++
+[source,bash,role=execute]
+----
+oc create -f openstack-edpm-reboot.yaml
 ----
 . Verify that the *openstack-edpm-ipam-reboot* deployment completed:
++
 [source,bash]
 ----
 oc get openstackdataplanedeployment
