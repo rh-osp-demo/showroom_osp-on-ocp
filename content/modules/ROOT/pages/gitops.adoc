@@ -11,7 +11,7 @@ In this lab, you will use the following infrastructure:
 
 In this lab, you will cover the following topics:
 
-* xref:prereqs-argocd-gitops.adoc[Perform Prerequisite Operations]
+* xref:prereqs-argocd.adoc[Perform Prerequisite Operations]
 * xref:prereqs-gitops.adoc[Install the Operators prerequisites using OpenShift gitops]
 * xref:install-operators-gitops.adoc[Install the Red Hat OpenStack Platform Service Operators using OpenShift gitops]
 * xref:network-isolation-gitops.adoc[Prepare OCP for OpenStack Network Isolation using OpenShift gitops]
