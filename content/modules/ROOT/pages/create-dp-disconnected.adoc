@@ -162,6 +162,13 @@ ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
 oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
 ----
 
+Create a secret for the subscription manager and a secret for the Red Hat registry:
+
+[source,bash,role=execute]
+----
+oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<username>": "<password>"}}'
+----
+
 In order to deploy in a disconnected/proxied/airgapped environment some configurations need to be entered into the openstack-dataplane-nodeset yaml file
 
 The main configurations are:
