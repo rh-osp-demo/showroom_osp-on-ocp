@@ -183,6 +183,13 @@ data:
 EOF
 ----
 
+Create a secret for the subscription manager and a secret for the Red Hat registry:
+
+[source,bash,role=execute]
+----
+oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<username>": "<password>"}}'
+----
+
 Deploy the Dataplane
 
 [source,bash,role=execute]
