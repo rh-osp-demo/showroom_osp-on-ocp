@@ -23,7 +23,7 @@
 ** xref:create-dp-disconnected.adoc[Create the Data plane]
 ** xref:access-disconnected.adoc[Access OpenStack]
 ** xref:scale-out-disconnected.adoc[Scale Out your deployment using Cluster Baremetal Operator provisioned nodes]
-* xref:updates.adoc[Install RHOSO 18.0.2 and update it to 18.0.3]
+* xref:updates.adoc[Install a previous version of RHOSO to update it to the latest]
 ** xref:prereqs-updates.adoc[Perform Prerequisite Operations]
 ** xref:install-operators-updates.adoc[Install the Red Hat OpenStack Platform Service Operators]
 ** xref:secure-updates.adoc[Configure Secure Access for OpenStack Services]

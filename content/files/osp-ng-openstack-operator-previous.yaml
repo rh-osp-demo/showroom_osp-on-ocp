@@ -18,7 +18,7 @@ spec:
   name: barbican-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: barbican-operator.v1.0.3
+  startingCSV: barbican-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -33,7 +33,7 @@ spec:
   name: cinder-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: cinder-operator.v1.0.3
+  startingCSV: cinder-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -48,7 +48,7 @@ spec:
   name: designate-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: designate-operator.v1.0.3
+  startingCSV: designate-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -63,7 +63,7 @@ spec:
   name: glance-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: glance-operator.v1.0.3
+  startingCSV: glance-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -78,7 +78,7 @@ spec:
   name: heat-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: heat-operator.v1.0.3
+  startingCSV: heat-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -93,7 +93,7 @@ spec:
   name: horizon-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: horizon-operator.v1.0.3
+  startingCSV: horizon-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -108,7 +108,7 @@ spec:
   name: infra-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: infra-operator.v1.0.3
+  startingCSV: infra-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -123,7 +123,7 @@ spec:
   name: ironic-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: ironic-operator.v1.0.3
+  startingCSV: ironic-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -138,7 +138,7 @@ spec:
   name: keystone-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: keystone-operator.v1.0.3
+  startingCSV: keystone-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -153,7 +153,7 @@ spec:
   name: manila-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: manila-operator.v1.0.3
+  startingCSV: manila-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -168,7 +168,7 @@ spec:
   name: mariadb-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: mariadb-operator.v1.0.3
+  startingCSV: mariadb-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -183,7 +183,7 @@ spec:
   name: neutron-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: neutron-operator.v1.0.3
+  startingCSV: neutron-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -198,7 +198,7 @@ spec:
   name: nova-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: nova-operator.v1.0.3
+  startingCSV: nova-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -213,22 +213,7 @@ spec:
   name: octavia-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: octavia-operator.v1.0.3
----
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  labels:
-    operators.coreos.com/openstack-ansibleee-operator.openstack-operators: ""
-  name: openstack-ansibleee-operator-stable-v1.0-redhat-operators-openshift-marketplace
-  namespace: openstack-operators
-spec:
-  channel: stable-v1.0
-  installPlanApproval: Manual
-  name: openstack-ansibleee-operator
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-  startingCSV: openstack-ansibleee-operator.v1.0.3
+  startingCSV: octavia-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -243,7 +228,7 @@ spec:
   name: openstack-baremetal-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: openstack-baremetal-operator.v1.0.3
+  startingCSV: openstack-baremetal-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -258,7 +243,7 @@ spec:
   name: openstack-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: openstack-operator.v1.0.3
+  startingCSV: openstack-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -273,7 +258,7 @@ spec:
   name: ovn-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: ovn-operator.v1.0.3
+  startingCSV: ovn-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -288,7 +273,7 @@ spec:
   name: placement-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: placement-operator.v1.0.3
+  startingCSV: placement-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -303,7 +288,7 @@ spec:
   name: rabbitmq-cluster-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: rabbitmq-cluster-operator.v1.0.3
+  startingCSV: rabbitmq-cluster-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -318,7 +303,7 @@ spec:
   name: swift-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: swift-operator.v1.0.3
+  startingCSV: swift-operator.v1.0.5
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -333,4 +318,4 @@ spec:
   name: telemetry-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: telemetry-operator.v1.0.3
+  startingCSV: telemetry-operator.v1.0.5
