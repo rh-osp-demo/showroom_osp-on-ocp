@@ -162,11 +162,11 @@ ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
 oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
 ----
 
-Create a secret for the subscription manager and a secret for the Red Hat registry:
+Create a secret for the subscription manager and a secret for the Red Hat registry, replace the string "uuid" by the uuid of your lab (`{guid}`):
 
 [source,bash,role=execute]
 ----
-oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<username>": "<password>"}}'
+oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"quay.apps.uuid.dynamic.redhatworkshops.io": {"quay_user": "openstack"}}'
 ----
 
 In order to deploy in a disconnected/proxied/airgapped environment some configurations need to be entered into the openstack-dataplane-nodeset yaml file
@@ -302,9 +302,6 @@ vi osp-ng-dataplane-node-set-deploy.yaml
 .Sample Output
 ----
 [...]
-         edpm_container_registry_logins:
-          quay.apps.55nc6.dynamic.redhatworkshops.io:
-            quay_user: openstack
          edpm_bootstrap_command: |
            ex +'/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <(echo | openssl s_client -showcerts -connect quay.apps.55nc6.dynamic.redhatworkshops.io:443) -scq > server.pem
            sudo cp server.pem /etc/pki/ca-trust/source/anchors/

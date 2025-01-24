@@ -8,21 +8,7 @@ spec:
       value: "True"
     - name: ANSIBLE_VERBOSITY
       value: "2"
-  services:
-    - bootstrap
-    - configure-network
-    - validate-network
-    - install-os
-    - configure-os
-    - ssh-known-hosts
-    - run-os
-    - reboot-os
-    - install-certs
-    - ovn
-    - neutron-metadata
-    - libvirt
-    - nova
-    - telemetry
+
   networkAttachments:
   - ctlplane
   baremetalSetTemplate: 
@@ -47,6 +33,7 @@ spec:
           defaultRoute: true
   nodeTemplate:
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
+    managementNetwork: ctlplane
     ansible:
       ansibleUser: root
       ansibleVars:
@@ -122,6 +109,7 @@ spec:
          tenant_cidr: '24'
          tenant_host_routes: []
          neutron_physical_bridge_name: br-osp
+         edpm_ovn_bridge_mappings: datacentre:br-osp
          # name of the first network interface on the compute node:
          neutron_public_interface_name: eth0
          # edpm_nodes_validation
@@ -129,11 +117,7 @@ spec:
          edpm_nodes_validation_validate_gateway_icmp: false
          gather_facts: false
          enable_debug: false
-         edpm_sshd_allowed_ranges: ['172.22.0.0/16']
-         edpm_podman_buildah_login: true
-         edpm_container_registry_logins:
-          quay.apps.uuid.dynamic.redhatworkshops.io:
-            quay_user: openstack
+         edpm_bootstrap_release_version_package: []
          edpm_bootstrap_command: |
            nmcli connection modify "System enp1s0" ipv4.never-default yes ipv6.never-default yes
            nmcli connection up "System enp1s0"
