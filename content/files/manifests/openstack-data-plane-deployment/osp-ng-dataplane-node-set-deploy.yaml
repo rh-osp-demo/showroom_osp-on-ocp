@@ -120,7 +120,7 @@ spec:
          tenant_cidr: '24'
          tenant_host_routes: []
          neutron_physical_bridge_name: br-osp
-         edpm_ovn_bridge_mappings: datacentre:br-osp
+         edpm_ovn_bridge_mappings: ["datacentre:br-osp"]
          # name of the first network interface on the compute node:
          neutron_public_interface_name: eth0
          # edpm_nodes_validation
