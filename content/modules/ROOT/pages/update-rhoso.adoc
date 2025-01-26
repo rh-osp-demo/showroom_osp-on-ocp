@@ -2,7 +2,7 @@
 
 ## Preparing for a minor update
 
-. In this lab we will perform an update of *edpm-compute0* and *edpm-compute1* compute node. We need to create 2 files include a set of OpenStackDataPlaneNodeSet custom resources (CRs):
+. In this lab we will perform an update of *edpm-compute0* compute node. We need to create 2 files include a set of OpenStackDataPlaneNodeSet custom resources (CRs):
 +
 * *openstack-edpm-update-ovn.yaml* - You use this file to update your OVN services. You must update OVN services before the OpenStack Operator can begin the automatic update of the remaining control plane services.
 * *openstack-edpm-update-services.yaml*- You use this file to update the remaining control plane packages, services, and container images on the data plane nodes.
@@ -19,29 +19,29 @@ oc get csv -n openstack-operators
 ----
 oc get csv -n openstack-operators
 NAME                                    DISPLAY                        VERSION               REPLACES                              PHASE
-barbican-operator.v1.0.3                Barbican Operator              1.0.3                 barbican-operator.v1.0.2              Succeeded
-cinder-operator.v1.0.3                  Cinder Operator                1.0.3                 cinder-operator.v1.0.2                Succeeded
-designate-operator.v1.0.3               Designate Operator             1.0.3                 designate-operator.v1.0.2             Succeeded
-glance-operator.v1.0.3                  Glance Operator                1.0.3                 glance-operator.v1.0.2                Succeeded
-heat-operator.v1.0.3                    Heat Operator                  1.0.3                 heat-operator.v1.0.2                  Succeeded
-horizon-operator.v1.0.3                 Horizon Operator               1.0.3                 horizon-operator.v1.0.2               Succeeded
-infra-operator.v1.0.3                   OpenStack Infra                1.0.3                 infra-operator.v1.0.2                 Succeeded
-ironic-operator.v1.0.3                  Ironic Operator                1.0.3                 ironic-operator.v1.0.2                Succeeded
-keystone-operator.v1.0.3                Keystone Operator              1.0.3                 keystone-operator.v1.0.2              Succeeded
-manila-operator.v1.0.3                  Manila Operator                1.0.3                 manila-operator.v1.0.2                Succeeded
-mariadb-operator.v1.0.3                 MariaDB Operator               1.0.3                 mariadb-operator.v1.0.2               Succeeded
+barbican-operator.v1.0.5                Barbican Operator              1.0.5                 barbican-operator.v1.0.4              Succeeded
+cinder-operator.v1.0.5                  Cinder Operator                1.0.5                 cinder-operator.v1.0.4                Succeeded
+designate-operator.v1.0.5               Designate Operator             1.0.5                 designate-operator.v1.0.4             Succeeded
+glance-operator.v1.0.5                  Glance Operator                1.0.5                 glance-operator.v1.0.4                Succeeded
+heat-operator.v1.0.5                    Heat Operator                  1.0.5                 heat-operator.v1.0.4                  Succeeded
+horizon-operator.v1.0.5                 Horizon Operator               1.0.5                 horizon-operator.v1.0.4               Succeeded
+infra-operator.v1.0.5                   OpenStack Infra                1.0.5                 infra-operator.v1.0.4                 Succeeded
+ironic-operator.v1.0.5                  Ironic Operator                1.0.5                 ironic-operator.v1.0.4                Succeeded
+keystone-operator.v1.0.5                Keystone Operator              1.0.5                 keystone-operator.v1.0.4              Succeeded
+manila-operator.v1.0.5                  Manila Operator                1.0.5                 manila-operator.v1.0.4                Succeeded
+mariadb-operator.v1.0.5                 MariaDB Operator               1.0.5                 mariadb-operator.v1.0.4               Succeeded
 metallb-operator.v4.16.0-202412170135   MetalLB Operator               4.16.0-202412170135                                         Succeeded
-neutron-operator.v1.0.3                 Neutron Operator               1.0.3                 neutron-operator.v1.0.2               Succeeded
-nova-operator.v1.0.3                    Nova Operator                  1.0.3                 nova-operator.v1.0.2                  Succeeded
-octavia-operator.v1.0.3                 Octavia Operator               1.0.3                 octavia-operator.v1.0.2               Succeeded
-openstack-ansibleee-operator.v1.0.3     OpenStackAnsibleEE             1.0.3                 openstack-ansibleee-operator.v1.0.2   Succeeded
-openstack-baremetal-operator.v1.0.3     OpenStack Baremetal Operator   1.0.3                 openstack-baremetal-operator.v1.0.2   Succeeded
-openstack-operator.v1.0.3               OpenStack                      1.0.3                 openstack-operator.v1.0.2             Succeeded
-ovn-operator.v1.0.3                     OVN Operator                   1.0.3                 ovn-operator.v1.0.2                   Succeeded
-placement-operator.v1.0.3               Placement Operator             1.0.3                 placement-operator.v1.0.2             Succeeded
-rabbitmq-cluster-operator.v1.0.3        RabbitMQ Cluster Operator      1.0.3                 rabbitmq-cluster-operator.v1.0.2      Succeeded
-swift-operator.v1.0.3                   Swift operator                 1.0.3                 swift-operator.v1.0.2                 Succeeded
-telemetry-operator.v1.0.3               Telemetry Operator             1.0.3                 telemetry-operator.v1.0.2             Succeeded
+neutron-operator.v1.0.5                 Neutron Operator               1.0.5                 neutron-operator.v1.0.4               Succeeded
+nova-operator.v1.0.5                    Nova Operator                  1.0.5                 nova-operator.v1.0.4                  Succeeded
+octavia-operator.v1.0.5                 Octavia Operator               1.0.5                 octavia-operator.v1.0.4               Succeeded
+openshift-gitops-operator.v1.15.0       Red Hat OpenShift GitOps       1.15.0                openshift-gitops-operator.v1.12.0     Succeeded
+openstack-baremetal-operator.v1.0.5     OpenStack Baremetal Operator   1.0.5                 openstack-baremetal-operator.v1.0.4   Succeeded
+openstack-operator.v1.0.5               OpenStack                      1.0.5                 openstack-operator.v1.0.4             Succeeded
+ovn-operator.v1.0.5                     OVN Operator                   1.0.5                 ovn-operator.v1.0.4                   Succeeded
+placement-operator.v1.0.5               Placement Operator             1.0.5                 placement-operator.v1.0.4             Succeeded
+rabbitmq-cluster-operator.v1.0.5        RabbitMQ Cluster Operator      1.0.5                 rabbitmq-cluster-operator.v1.0.4      Succeeded
+swift-operator.v1.0.5                   Swift operator                 1.0.5                 swift-operator.v1.0.4                 Succeeded
+telemetry-operator.v1.0.5               Telemetry Operator             1.0.5                 telemetry-operator.v1.0.4             Succeeded
 ----
 Manually approve the update:
 [source,bash,role=execute]
@@ -51,8 +51,8 @@ oc get installplan -n openstack-operators
 .Sample Output
 ----
 NAME            CSV                      APPROVAL   APPROVED
-install-2ljg6   manila-operator.v1.0.5   Manual     false
-install-7dgfd   manila-operator.v1.0.3   Manual     true
+install-9wrs7   cinder-operator.v1.0.6   Manual     false
+install-m76bj   infra-operator.v1.0.5    Manual     true
 ----
 Find and approve the pending InstallPlan:
 [source,bash,role=execute]
@@ -129,7 +129,7 @@ oc get openstackversion -n openstack
 .Sample Output
 ----
 NAME                                 TARGET VERSION      AVAILABLE VERSION   DEPLOYED VERSION
-openstack-galera-network-isolation   18.0.2-20240923.2   18.0.3-20241126.2   18.0.2-20240923.2
+openstack-galera-network-isolation   18.0.3-20241126.2   18.0.4-20250106.2   18.0.3-20241126.2
 ----
 
 Update the target version in the *OpenStackVersion* custom resource (CR) to point to the version that you want to install. After you update the target version, the OVN service update on the control plane begins automatically.
@@ -140,7 +140,7 @@ Update the target version in the *OpenStackVersion* custom resource (CR) to poin
 ----
 cat <<EOF >openstackversionpatch.yaml
    "spec": {
-     "targetVersion": 18.0.3-20241126.2
+     "targetVersion": 18.0.4-20250106.2
      }
 EOF
 ----
