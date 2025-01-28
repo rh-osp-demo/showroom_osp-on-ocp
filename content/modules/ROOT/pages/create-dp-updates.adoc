@@ -187,7 +187,7 @@ Create a secret for the subscription manager and a secret for the Red Hat regist
 
 [source,bash,role=execute]
 ----
-oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<username>": "<password>"}}'
+oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<username>": "<password>"}}' -n openstack
 ----
 
 Deploy the Dataplane

@@ -166,7 +166,7 @@ Create a secret for the subscription manager and a secret for the Red Hat regist
 
 [source,bash,role=execute]
 ----
-oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"quay.apps.uuid.dynamic.redhatworkshops.io": {"quay_user": "openstack"}}'
+oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"quay.apps.uuid.dynamic.redhatworkshops.io": {"quay_user": "openstack"}}' -n openstack
 ----
 
 In order to deploy in a disconnected/proxied/airgapped environment some configurations need to be entered into the openstack-dataplane-nodeset yaml file
