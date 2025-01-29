@@ -6,10 +6,10 @@ metadata:
   name: barbican-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: barbican-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -23,10 +23,10 @@ metadata:
   name: cinder-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: cinder-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -40,10 +40,10 @@ metadata:
   name: designate-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: designate-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -57,10 +57,10 @@ metadata:
   name: glance-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: glance-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -74,10 +74,10 @@ metadata:
   name: heat-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: heat-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -91,12 +91,12 @@ metadata:
   name: horizon-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: horizon-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -110,12 +110,12 @@ metadata:
   name: infra-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: infra-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -129,10 +129,10 @@ metadata:
   name: ironic-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: ironic-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -146,10 +146,10 @@ metadata:
   name: keystone-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: keystone-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -163,10 +163,10 @@ metadata:
   name: manila-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: manila-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -180,10 +180,10 @@ metadata:
   name: mariadb-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: mariadb-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -197,10 +197,10 @@ metadata:
   name: neutron-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: neutron-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -214,10 +214,10 @@ metadata:
   name: nova-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: nova-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -231,10 +231,10 @@ metadata:
   name: octavia-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: octavia-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -248,10 +248,10 @@ metadata:
   name: openstack-baremetal-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: openstack-baremetal-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -265,10 +265,10 @@ metadata:
   name: openstack-operator
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: openstack-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -282,10 +282,10 @@ metadata:
   name: ovn-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: ovn-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -299,10 +299,10 @@ metadata:
   name: placement-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: placement-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -316,10 +316,10 @@ metadata:
   name: rabbitmq-cluster-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: rabbitmq-cluster-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -333,10 +333,10 @@ metadata:
   name: swift-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: swift-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
@@ -350,10 +350,10 @@ metadata:
   name: telemetry-operator-stable-v1.0-redhat-operators-openshift-marketplace
   namespace: openstack-operators
   annotations:
-    argocd.argoproj.io/sync-wave: "2"  
+    argocd.argoproj.io/sync-wave: "3"  
 spec:
   channel: stable-v1.0
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: telemetry-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
