@@ -6,5 +6,5 @@ spec:
   nodeSets:
     - openstack-edpm-ipam
   servicesOverride:
-    - update
     - nova
+    - update
