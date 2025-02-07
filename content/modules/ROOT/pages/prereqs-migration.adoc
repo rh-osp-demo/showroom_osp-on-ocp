@@ -1,0 +1,110 @@
+= Install pre-requisites
+
+== Install Red Hat OpenStack Services on OpenShift 18
+
+As we will be using RHOSO as the target migration for Vmware use any of the following labs to install RHOSO 18:
+
+* xref:connected.adoc[Install RHOSO using CDN - Connected environment]
+* xref:gitops.adoc[Install and discover RHOSO using Gitops ArgoCD]
+
+== Deploy a Conversion Host in your OpenStack environment 
+
+In the hypervisor:
+
+Copy the Centos 9.4 to the bastion host:
+
+[source,bash,role=execute]
+----
+scp /var/lib/libvirt/images/centos9-kvm.qcow2 root@192.168.123.100:
+----
+
+In the bastion, map the Compute nodes to the Compute cell that they are connected to:
+
+[source,bash,role=execute]
+----
+oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
+----
+
+Copy the bastion public key to the openstackclient pod:
+[source,bash,role=execute]
+----
+oc cp /root/.ssh/id_rsa.pub openstack/openstackclient:/home/cloud-admin/.
+----
+
+Copy the Centos 9.4 qcow image to the openstackclient pod:
+[source,bash,role=execute]
+----
+oc cp /root/centos9-kvm.qcow2 openstack/openstackclient:/home/cloud-admin/.
+----
+
+Access to the openstackclient pod
+
+[source,bash,role=execute]
+----
+oc rsh -n openstack openstackclient
+----
+
+Create networks and security groups if you didn't create it when installing RHOSO 18
+
+[source,bash,role=execute]
+----
+export GATEWAY=192.168.123.1
+export PUBLIC_NETWORK_CIDR=192.168.123.1/24
+export PRIVATE_NETWORK_CIDR=192.168.100.0/24
+export PUBLIC_NET_START=192.168.123.91
+export PUBLIC_NET_END=192.168.123.99
+export DNS_SERVER=8.8.8.8
+openstack security group create basic
+openstack security group rule create basic --protocol tcp --dst-port 22:22 --remote-ip 0.0.0.0/0
+openstack security group rule create --protocol icmp basic
+openstack security group rule create --protocol udp --dst-port 53:53 basic
+openstack network create --external --provider-physical-network datacentre --provider-network-type flat public
+openstack network create --internal private
+openstack subnet create public-net \
+--subnet-range $PUBLIC_NETWORK_CIDR \
+--no-dhcp \
+--dns-nameserver $DNS_SERVER \
+--gateway $GATEWAY \
+--allocation-pool start=$PUBLIC_NET_START,end=$PUBLIC_NET_END \
+--network public
+openstack subnet create private-net \
+--subnet-range $PRIVATE_NETWORK_CIDR \
+--dns-nameserver $DNS_SERVER \
+--network private
+openstack router create vrouter
+openstack router set vrouter --external-gateway public
+openstack router add subnet vrouter private-net
+----
+
+Create image and flavors
+[source,bash,role=execute]
+----
+openstack flavor create --ram 4096 --disk 35 --vcpu 2 --public migrate
+openstack keypair create --public-key ~/id_rsa.pub bastion_key
+openstack image create centos9-image --container-format bare --disk-format qcow2 --public --file centos9-kvm.qcow2
+----
+
+Create the Server and a Floating IP
+
+[source,bash,role=execute]
+----
+openstack server create \
+    --flavor migrate --key-name bastion_key --network private --security-group basic \
+    --image centos9-image centos9-ch
+openstack floating ip create public --floating-ip-addres 192.168.123.95
+----
+
+Add the floating IP above to the new VM in the next step.
+
+[source,bash,role=execute]
+----
+openstack server add floating ip centos9-ch 192.168.123.95
+exit
+----
+
+From the bastion access to the VM.
+
+[source,bash,role=execute]
+----
+ssh -i /root/.ssh/id_rsa cloud-user@192.168.123.95
+----

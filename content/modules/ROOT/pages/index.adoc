@@ -11,6 +11,9 @@ You have four installation options:
 * xref:gitops.adoc[Install and discover RHOSO using Gitops ArgoCD - LAB IN MAINTENANCE]
 * xref:breakfix.adoc[Install and discover RHOSO using Gitops ArgoCD. Break & Fix - LAB IN MAINTENANCE]
 
+Then if you want to go through a Vmware to RHOSO migration:
+* xref:migration.adoc[Vmware to RHOSO VM migration using os-migrate vmware migration kit] 
+
 Within the lab environment, you will be able to copy and paste the specified commands into the CLI.
 For some steps you may also need to edit some of the commands from the  instructions.
 

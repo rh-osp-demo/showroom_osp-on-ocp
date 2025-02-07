@@ -50,3 +50,8 @@
 ** xref:deploy-data-plane-bf.adoc[Deploy RHOSO data plane using OpenShift gitops]
 ** xref:access.adoc[Access OpenStack]
 ** xref:scale-out.adoc[Scale Out your deployment using Cluster Baremetal Operator provisioned nodes]
+* xref:migration.adoc[Vmware to RHOSO VM migration using os-migrate vmware migration kit]
+** xref:prereqs-migration.adoc[Perform Prerequisite Operations]
+** xref:install-os-migrate.adoc[Install the os-migrate vmware migration kit]
+** xref:configure-os-migrate.adoc[Configure the os-migrate vmware migration kit]
+** xref:migrate-vm.adoc[Execute the Virtual machine migration]
