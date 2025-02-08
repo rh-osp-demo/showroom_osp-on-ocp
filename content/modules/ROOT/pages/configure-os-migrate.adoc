@@ -43,7 +43,7 @@ Create the os_migrate_vars.yamls file:
 ----
 cat << EOF > os_migrate_vars.yaml
 # osm working directory:
-os_migrate_data_dir: /opt/os-migrate
+os_migrate_vmw_data_dir: /opt/os-migrate
 copy_openstack_credentials_to_conv_host: false
 
 # Re-use an already deployed conversion host:
