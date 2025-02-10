@@ -27,6 +27,7 @@ Create an alias to use the openstack command in the Red Hat OpenStack Services o
 
 [source,bash,role=execute]
 ----
+oc project openstack
 alias openstack="oc exec -t openstackclient -- openstack"
 ----
 
