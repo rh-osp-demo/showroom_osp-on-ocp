@@ -26,6 +26,10 @@ EOF
 
 Create a secret for the subscription manager and a secret for the Red Hat registry:
 
+[IMPORTANT]
+
+Add your username and password
+
 [source,bash,role=execute]
 ----
 oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<username>": "<password>"}}'

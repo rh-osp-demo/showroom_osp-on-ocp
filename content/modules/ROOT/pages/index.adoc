@@ -9,7 +9,6 @@ You have four installation options:
 * xref:disconnected.adoc[Install RHOSO using Satellite and Quay - Disconnected Environment]
 * xref:updates.adoc[Install a previous version of RHOSO to update it to the latest]
 * xref:gitops.adoc[Install and discover RHOSO using Gitops ArgoCD ]
-* xref:breakfix.adoc[Install and discover RHOSO using Gitops ArgoCD. Break & Fix ]
 
 Within the lab environment, you will be able to copy and paste the specified commands into the CLI.
 For some steps you may also need to edit some of the commands from the  instructions.
