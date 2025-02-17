@@ -1,0 +1,44 @@
+= Execute the virtual machine migration
+
+Navigate to the the vcenter console: {vcenter_console} using username: {vcenter_full_user} and password: {vcenter_password}.
+
+image::ha-proxy-power-on.png[Ha-proxy-vm]
+
+Power on the virtual machine haproxy-{guid}
+
+In the bastion, launch the migration:
+
+[source,bash,role=execute,subs=attributes]
+----
+ansible-playbook os_migrate.vmware_migration_kit.migration -i inventory.yaml -e @secrets.yaml -e @os_migrate_vars.yaml
+----
+
+Check that the VM has been migrated:
+
+[source,bash,role=execute,subs=attributes]
+----
+alias openstack="oc exec -t openstackclient -- openstack"
+openstack server list
+----
+
+. Sample Output
+
+[source,bash]
+----
++--------------------------------------+---------------+--------+-----------------------------------------+--------------------------+--------------------------+
+| ID                                   | Name          | Status | Networks                                | Image                    | Flavor                   |
++--------------------------------------+---------------+--------+-----------------------------------------+--------------------------+--------------------------+
+| 77844fc9-1c83-4328-8995-3c9a008e8134 | haproxy-tztc2 | ACTIVE | private=192.168.100.237, 192.168.123.97 | N/A (booted from volume) | osm-vmware-haproxy-tztc2 |
+| 7fa1709c-4b6e-4adf-8098-f57a0ee43abd | centos9-ch    | ACTIVE | private=192.168.100.196, 192.168.123.95 | centos9-image            | migrate                  |
++--------------------------------------+---------------+--------+-----------------------------------------+--------------------------+--------------------------+
+----
+
+Ping the migrated VM:
+
+[source,bash]
+----
+ping 192.168.123.97
+PING 192.168.123.97 (192.168.123.97) 56(84) bytes of data.
+64 bytes from 192.168.123.97: icmp_seq=1 ttl=63 time=1.41 ms
+64 bytes from 192.168.123.97: icmp_seq=2 ttl=63 time=0.792 ms
+----

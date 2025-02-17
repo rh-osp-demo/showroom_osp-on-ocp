@@ -1,0 +1,15 @@
+= Install os-migrate vmware migration kit
+
+In the bastion, install the *ansible-core* package, *pyVim* and *python-openstacksdk*:
+
+[source,bash,role=execute]
+----
+sudo dnf -y install ansible-core python3-pyvmomi.noarch python-openstacksdk
+----
+
+In the *os-migrate vmware kit* ansible collection:
+
+[source,bash,role=execute]
+----
+ansible-galaxy collection install os_migrate.vmware_migration_kit
+----
