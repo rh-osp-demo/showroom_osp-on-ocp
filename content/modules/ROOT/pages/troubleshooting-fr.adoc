@@ -1,0 +1,121 @@
+# Dépannage de vos déploiements OpenStack
+
+Les logs de votre déploiement se trouvent dans le *controller-manager* des différents Opérateurs RHOSP. 
+
+Depuis le *serveur bastion*, accédez au plan de contrôle :
+
+[source,bash,role=execute]
+----
+oc get pods -n openstack-operators
+----
+
+.Exemple de sortie
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+barbican-operator-controller-manager-7fb68ff6cb-8zhnf             2/2     Running   0          38m
+cinder-operator-controller-manager-c8f77fcfb-cjwl5                2/2     Running   0          37m
+designate-operator-controller-manager-78b49498cf-s24nj            2/2     Running   0          37m
+glance-operator-controller-manager-58996fbd7d-g9xvg               2/2     Running   0          37m
+heat-operator-controller-manager-74c6c75fd7-qnx2r                 2/2     Running   0          38m
+horizon-operator-controller-manager-76459c97c9-689qv              2/2     Running   0          37m
+infra-operator-controller-manager-77fccf5fc5-6k9zk                2/2     Running   0          38m
+ironic-operator-controller-manager-6bd9577485-26ldg               2/2     Running   0          36m
+keystone-operator-controller-manager-59b77787bb-cqxsq             2/2     Running   0          37m
+manila-operator-controller-manager-5c87bb85f4-pnr7p               2/2     Running   0          38m
+mariadb-operator-controller-manager-869fb6f6fd-5n8d6              2/2     Running   0          37m
+neutron-operator-controller-manager-75f674c89c-22mcx              2/2     Running   0          38m
+nova-operator-controller-manager-544c56f75b-s7c7s                 2/2     Running   0          38m
+octavia-operator-controller-manager-5b9c8db7d6-r4sg5              2/2     Running   0          38m
+openstack-ansibleee-operator-controller-manager-5dddc7ccb99kmmp   2/2     Running   0          37m
+openstack-baremetal-operator-controller-manager-77975546555v9m5   2/2     Running   0          38m
+openstack-operator-controller-manager-cfcf84546-4cbwb             2/2     Running   0          37m
+ovn-operator-controller-manager-6d77f744c4-g2lm8                  2/2     Running   0          36m
+placement-operator-controller-manager-84dc689f7c-trfxb            2/2     Running   0          37m
+rabbitmq-cluster-operator-7d6b597db7-mtknb                        1/1     Running   0          37m
+swift-operator-controller-manager-5fdb4c94d9-bp9l6                2/2     Running   0          37m
+telemetry-operator-controller-manager-564b55fd8-tzmcb             2/2     Running   0          38m
+----
+## Dépannage lors de la création du plan de contrôle
+. Tout d’abord, déterminez le nom et l’état du plan de contrôle openstack :
++
+----
+$ oc get openstackcontrolplane -n openstack
+----
+.Excemple de sortie
+----
+NAME                                 STATUS   MESSAGE
+openstack-galera-network-isolation   True     Setup complete
+----
+
+
+Afin de déboguer tout problème dans le déploiement de votre plan de contrôle, récupérez les journaux de *openstack-operator-controller-manager* : 
+
+.Exemple de sortie
+----
+oc logs openstack-operator-controller-manager-cfcf84546-4cbwb -n openstack-operators
+----
+
+## Dépannage de la création du plan de données
+
+Chaque déploiement de plan de données dans l'environnement est associé à des services. Chacun de ces services dispose d'un message de condition de travail qui correspond à l'état actuel du travail AnsibleEE en cours d'exécution pour ce service. Ces informations peuvent être utilisées pour dépanner les déploiements lorsque les services ne se déploient pas ou ne fonctionnent pas correctement.
+
+.Procedure
+
+. Déterminez le nom et l'état de tous les déploiements :
++
+----
+oc get openstackdataplanedeployment
+----
++
+L'exemple de résultat suivant montre deux déploiements actuellement en cours :
++
+----
+oc get openstackdataplanedeployment
+
+NAME                   NODESETS             STATUS   MESSAGE
+openstack-edpm-ipam1   ["openstack-edpm"]   False    Deployment in progress
+openstack-edpm-ipam2   ["openstack-edpm"]   False    Deployment in progress
+----
+
+. Déterminez le nom et le statut de tous les services et le statut de leur job :
++
+----
+oc get openstackansibleee
+----
++
+L'exemple de sortie suivant montre tous les services et leur statut pour tous les déploiements actuels :
++
+----
+oc get openstackansibleee
+
+NAME                             NETWORKATTACHMENTS   STATUS   MESSAGE
+bootstrap-openstack-edpm         ["ctlplane"]         True     Job completed
+download-cache-openstack-edpm    ["ctlplane"]         False    Job in progress
+repo-setup-openstack-edpm        ["ctlplane"]         True     Job completed
+validate-network-another-osdpd   ["ctlplane"]         False    Job in progress
+----
+
+. Filtrez le nom et le service pour un déploiement spécifique :
++
+----
+oc get openstackansibleee -l openstackdataplanedeployment=<deployment_name>
+----
++
+* Remplacez `<deployment_name>` par le nom du déploiement à utiliser pour filtrer la liste des services.
++
+The following example filters the list to only show services and their job condition for the `openstack-edpm-ipam1` deployment:
+L'exemple suivant filtre la liste pour afficher uniquement les services et l'état pour le déploiement « openstack-edpm-ipam1 » :
++
+----
+$ oc get openstackansibleee -l openstackdataplanedeployment=openstack-edpm-ipam1
+
+NAME                            NETWORKATTACHMENTS   STATUS   MESSAGE
+bootstrap-openstack-edpm        ["ctlplane"]         True     Job completed
+download-cache-openstack-edpm   ["ctlplane"]         False    Job in progress
+repo-setup-openstack-edpm       ["ctlplane"]         True     Job completed
+----
++
+Pour étudier plus en détail un service qui affiche un message de job particulier, affichez ses journaux à l'aide de la commande oc logs job/<service>. Par exemple, pour afficher les journaux du service repo-setup-openstack-edpm, utilisez la commande 
+----
+oc logs job/repo-setup-openstack-edpm.
+----
