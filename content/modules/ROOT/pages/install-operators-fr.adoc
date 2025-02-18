@@ -1,0 +1,104 @@
+= Installer l'opérateur OpenStack
+
+. Cloner le dépot de fichier
++
+Dans le terminal du bastion, clonez le dépôt et changez de répertoire pour accéder aux fichiers que nous utiliserons plus tard dans le laboratoire
++
+[source,bash,role=execute]
+----
+git clone https://github.com/rh-osp-demo/showroom_osp-on-ocp.git labrepo
+cd labrepo/content/files
+----
+
+. Installer les Opérateurs OpenStack
++
+La prochaine étape pour installer les Opérateurs OpenStack sera de créer le projet openstack-operators pour les opérateurs RHOSO:
++
+[source,bash,role=execute]
+----
+oc new-project openstack-operators
+----
+
+. Créer le projet `openstack` pour l'environnement RHOSO déployé:
++
+[source,bash,role=execute]
+----
+oc new-project openstack
+----
+
+. Configurer la **Source du catalogue (CatalogSource), le groupe d'opérateur (OperatorGroup) et l'abonnement (Subscription)** pour l'**Operateur Openstack** en utilisant votre registre:
++
+Créez les nouveaux CRs **CatalogSource, OperatorGroup, and Subscription** dans le namespace **openstack** à partir du fichier **files/openstack-operators.yaml**: Vous pouvez couper et coller les fichiers yaml référencés depuis le dépôt ou vous pourriez cloner le dépôt sur le bastion, ce que ce guide supposera: 
++
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-openstack-operator.yaml
+----
+. Installez l'opérateur en utilisant la stratégie d'approbation manuelle. Confirmez qu'un plan d'installation a été créé mais non exécuté car il n'a pas été approuvé:
+[source,bash,role=execute]
+----
+oc get installplan -n openstack-operators
+----
+.Exemple de sortie
+----
+NAME            CSV                       APPROVAL   APPROVED
+install-lfs4j   octavia-operator.v1.0.0   Manual     false
+----
+. Approuver l'installation de l'opérateur en mettant à jour le champ approuvé de l'InstallPlan:
+[source,bash,role=execute]
+----
+oc patch installplan install-lfs4j  \
+    --namespace openstack-operators \
+    --type merge \
+    --patch '{"spec":{"approved":true}}'
+----
+. Confirmez que vous avez installé l'opérateur Openstack, *openstack-operator.openstack-operators*:
++
+[source,bash,role=execute]
+----
+oc get operators openstack-operator.openstack-operators
+----
+
+. Examinez les pods dans le namespace **openstack-operators** :
++
+[source,bash,role=execute]
+----
+oc get pods -n openstack-operators
+----
+
+. Si vous exécutez :
++
+[source, bash,role=execute]
+----
+oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp
+----
++
+Vous devriez voir une liste des pods terminés, puis des pods des services openstack en cours d'exécution.
+Cela devrait ressembler à:
++
+.Exemple de sortie 
+----
+NAME                                                              READY   STATUS    RESTARTS   AGE
+barbican-operator-controller-manager-7fb68ff6cb-8zhnf             2/2     Running   0          7m20s
+cinder-operator-controller-manager-c8f77fcfb-cjwl5                2/2     Running   0          7m4s
+designate-operator-controller-manager-78b49498cf-s24nj            2/2     Running   0          6m46s
+glance-operator-controller-manager-58996fbd7d-g9xvg               2/2     Running   0          6m38s
+heat-operator-controller-manager-74c6c75fd7-qnx2r                 2/2     Running   0          7m19s
+horizon-operator-controller-manager-76459c97c9-689qv              2/2     Running   0          6m45s
+infra-operator-controller-manager-77fccf5fc5-6k9zk                2/2     Running   0          7m15s
+ironic-operator-controller-manager-6bd9577485-26ldg               2/2     Running   0          6m8s
+keystone-operator-controller-manager-59b77787bb-cqxsq             2/2     Running   0          6m30s
+manila-operator-controller-manager-5c87bb85f4-pnr7p               2/2     Running   0          7m48s
+mariadb-operator-controller-manager-869fb6f6fd-5n8d6              2/2     Running   0          6m17s
+neutron-operator-controller-manager-75f674c89c-22mcx              2/2     Running   0          8m2s
+nova-operator-controller-manager-544c56f75b-s7c7s                 2/2     Running   0          7m55s
+octavia-operator-controller-manager-5b9c8db7d6-r4sg5              2/2     Running   0          8m7s
+openstack-ansibleee-operator-controller-manager-5dddc7ccb99kmmp   2/2     Running   0          6m54s
+openstack-baremetal-operator-controller-manager-77975546555v9m5   2/2     Running   0          7m47s
+openstack-operator-controller-manager-cfcf84546-4cbwb             2/2     Running   0          7m2s
+ovn-operator-controller-manager-6d77f744c4-g2lm8                  2/2     Running   0          6m10s
+placement-operator-controller-manager-84dc689f7c-trfxb            2/2     Running   0          6m47s
+rabbitmq-cluster-operator-7d6b597db7-mtknb                        1/1     Running   0          6m16s
+swift-operator-controller-manager-5fdb4c94d9-bp9l6                2/2     Running   0          6m22s
+telemetry-operator-controller-manager-564b55fd8-tzmcb             2/2     Running   0          8m11s
+----
