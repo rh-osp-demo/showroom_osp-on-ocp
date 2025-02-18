@@ -1,0 +1,27 @@
+= Installation des services Red Hat Openstack sur OpenShift - Environnement connecté
+
+Dans ce laboratoire, vous utiliserez l'infrastructure suivante :
+
+* Un cluster OCP 4.16 avec 3 nœuds contrôleurs OCP + 3 nœuds workers OCP
+* Un hôte bastion pour accéder à l'environnement OCP
+* Un hôte de calcul virtualisé RHEL 9.4
+
+Dans ce laboratoire, vous couvrirez les sujets suivants :
+
+* xref:prereqs.adoc[Effectuer les opérations préalables]
+* xref:install-operators.adoc[Installer les opérateurs de services Red Hat OpenStack Platform]
+* xref:secure.adoc[Configurer un accès sécurisé pour les services OpenStack]
+* xref:network-isolation.adoc[Préparer OCP pour l'isolation réseau OpenStack]
+* xref:create-cp.adoc[Créer le plan de contrôle]
+* xref:create-dp.adoc[Créer le plan de données]
+* xref:troubleshooting.adoc[Dépanner votre déploiement RHOSO]
+* xref:access.adoc[Accéder à OpenStack]
+* xref:scale-out.adoc[Étendre votre déploiement à l'aide de nœuds provisionnés par l'opérateur de Cluster Baremetal]
+* xref:scale-in.adoc[Réduire votre nœud pré-provisionné]
+* xref:collecting-diagnostic-information.adoc[Collecter des informations de diagnostic]
+* xref:validate.adoc[Valider votre cloud déployé à l'aide de l'opérateur Tempest]
+
+Dans l'environnement de laboratoire, vous pourrez copier et coller les commandes spécifiées dans l'interface CLI.
+Pour certaines étapes, vous devrez également modifier certaines commandes des instructions.
+
+*Assurez-vous d'examiner attentivement toutes les commandes, tant pour leur fonctionnalité que pour leur syntaxe !*
