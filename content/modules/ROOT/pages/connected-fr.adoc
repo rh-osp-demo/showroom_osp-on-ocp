@@ -8,18 +8,18 @@ Dans ce laboratoire, vous utiliserez l'infrastructure suivante :
 
 Dans ce laboratoire, vous couvrirez les sujets suivants :
 
-* xref:prereqs.adoc[Effectuer les opérations préalables]
-* xref:install-operators.adoc[Installer les opérateurs de services Red Hat OpenStack Platform]
-* xref:secure.adoc[Configurer un accès sécurisé pour les services OpenStack]
-* xref:network-isolation.adoc[Préparer OCP pour l'isolation réseau OpenStack]
-* xref:create-cp.adoc[Créer le plan de contrôle]
-* xref:create-dp.adoc[Créer le plan de données]
-* xref:troubleshooting.adoc[Dépanner votre déploiement RHOSO]
-* xref:access.adoc[Accéder à OpenStack]
-* xref:scale-out.adoc[Étendre votre déploiement à l'aide de nœuds provisionnés par l'opérateur de Cluster Baremetal]
-* xref:scale-in.adoc[Réduire votre nœud pré-provisionné]
-* xref:collecting-diagnostic-information.adoc[Collecter des informations de diagnostic]
-* xref:validate.adoc[Valider votre cloud déployé à l'aide de l'opérateur Tempest]
+* xref:prereqs-fr.adoc[Effectuer les opérations préalables]
+* xref:install-operators-fr.adoc[Installer les opérateurs de services Red Hat OpenStack Platform]
+* xref:secure-fr.adoc[Configurer un accès sécurisé pour les services OpenStack]
+* xref:network-isolation-fr.adoc[Préparer OCP pour l'isolation réseau OpenStack]
+* xref:create-cp-fr.adoc[Créer le plan de contrôle]
+* xref:create-dp-fr.adoc[Créer le plan de données]
+* xref:troubleshooting-fr.adoc[Dépanner votre déploiement RHOSO]
+* xref:access-fr.adoc[Accéder à OpenStack]
+* xref:scale-out-fr.adoc[Étendre votre déploiement à l'aide de nœuds provisionnés par l'opérateur de Cluster Baremetal]
+* xref:scale-in-fr.adoc[Réduire votre nœud pré-provisionné]
+* xref:collecting-diagnostic-information-fr.adoc[Collecter des informations de diagnostic]
+* xref:validate-fr.adoc[Valider votre cloud déployé à l'aide de l'opérateur Tempest]
 
 Dans l'environnement de laboratoire, vous pourrez copier et coller les commandes spécifiées dans l'interface CLI.
 Pour certaines étapes, vous devrez également modifier certaines commandes des instructions.
