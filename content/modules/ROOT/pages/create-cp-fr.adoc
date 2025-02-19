@@ -1,0 +1,63 @@
+= Créer le plan de contrôle OpenStack
+
+Nous utiliserons un fichier préconfiguré (*files/osp-ng-ctlplane-deploy.yaml*) pour créer le plan de contrôle et en même temps activer les services requis, configurer le réseau du plan de contrôle et configurer les backends de service.
+Le bastion dispose d'un service NFS préconfiguré que nous utiliserons pour stocker les images glance et les volumes cinder.
+
+== Créer un partage NFS pour cinder et glance
+
+[source,bash,role=execute]
+----
+mkdir /nfs/cinder
+chmod 777 /nfs/cinder
+mkdir /nfs/glance
+chmod 777 /nfs/glance
+----
+
+== Configurer la classe de stockage NFS
+
+[source,bash,role=execute]
+----
+mkdir /nfs/pv6
+mkdir /nfs/pv7
+mkdir /nfs/pv8
+mkdir /nfs/pv9
+mkdir /nfs/pv10
+mkdir /nfs/pv11
+chmod 777 /nfs/pv*
+----
+
+[source,bash,role=execute]
+----
+oc create -f nfs-storage.yaml
+----
+
+== Préparer le secret pour la connexion au serveur NFS utilisée par Cinder
+
+[source,bash,role=execute]
+----
+oc create secret generic cinder-nfs-config --from-file=nfs-cinder-conf
+----
+
+== Enfin créer le plan de contrôle OpenStack
+
+[source,bash,role=execute]
+----
+oc create -f osp-ng-ctlplane-deploy.yaml
+----
+
+Attendez jusqu'à ce que le déploiement du plan de contrôle OpenStack soit terminé:
+
+[source,bash,role=execute]
+----
+oc get openstackcontrolplane -n openstack
+----
+
+AVERTISSEMENT: Cela peut prendre plusieurs minutes.
+
+Répétez la requête jusqu'à ce que MESSAGE indique "Setup complete"
+
+.Exemple de sortie
+----
+NAME                                 STATUS   MESSAGE
+openstack-galera-network-isolation   True     Setup complete
+----
