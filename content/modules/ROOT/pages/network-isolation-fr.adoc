@@ -1,0 +1,84 @@
+== Préparation de RHOCP pour l'isolation réseau RHOSO
+
+Tableau des plages IP de réseau :
+
+[cols="7*", options="header"]
+|======================================================================================================================================================================================
+|             | VLAN | CIDR             | NetConfig allocationRange                               | MetalLB IPAddressPool range | net-attach-def ipam range | OCP worker nncp range    
+| ctlplane    |  n/a | 172.22.0.0/24    | 172.22.0.100 - 172.22.0-120 172.22.0.150 - 172.22.0.200 | 172.22.0.80 - 172.22.0.90   | 172.22.0.30 - 172.22.0.70 | 172.22.0.10 - 172.22.0.12
+| external    | n/a  | 192.168.123.0/24 | 192.168.123.61 - 192.168.123.90                         | n/a                         | n/a                       | n/a                      
+| internalapi | 20   | 172.17.0.0/24    | 172.17.0.100 - 172.17.0.250                             | 172.17.0.80 - 172.17.0.90   | 172.17.0.30 - 172.17.0.70 | 172.17.0.10 - 172.17.0.12
+| storage     | 21   | 172.18.0.0/24    | 172.18.0.100 - 172.18.0.250                             | 172.18.0.80 - 172.18.0.90   | 172.18.0.30 - 172.18.0.70 | 172.18.0.10 - 172.18.0.12
+| tenant      | 22   | 172.19.0.0/24    | 172.19.0.100 - 172.19.0.250                             | 172.18.0.80 - 172.18.0.90   | 172.19.0.30 - 172.19.0.70 | 172.19.0.10 - 172.19.0.12
+|======================================================================================================================================================================================
+
+Nous utiliserons un ensemble préconfiguré de fichiers yaml dans le répertoire `files` qui commencent par `osp-ng-nncp-`.
+Il y a 3 fichiers pour les nœuds de travail (worker nodes).
+
+Changez pour le répertoire `files` :
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files
+----
+
+Appliquez les yamls préconfigurés individuellement:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-nncp-w1.yaml
+oc apply -f osp-ng-nncp-w2.yaml
+oc apply -f osp-ng-nncp-w3.yaml
+----
+
+Attendez qu'ils soient dans un état disponible avant de continuer:
+
+[source,bash,role=execute]
+----
+oc get nncp -w
+----
+
+.Exemple de sortie
+[source,bash]
+----
+NAME                              STATUS      REASON
+osp-enp1s0-worker-ocp4-worker1    Available   SuccessfullyConfigured
+osp-enp1s0-worker-ocp4-worker2    Available   SuccessfullyConfigured
+osp-enp1s0-worker-ocp4-worker3    Available   SuccessfullyConfigured
+----
+
+Avant de continuer, configurez une ressource *nad* pour chaque réseau isolé afin d'attacher un pod de service au réseau :
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-netattach.yaml
+----
+
+Une fois que les nœuds sont disponibles et attachés, configurez la *plage d'adresses IP MetalLB* en utilisant un fichier yaml préconfiguré :
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-metal-lb-ip-address-pools.yaml
+----
+
+Configurez une ressource *L2Advertisement* qui définira quel nœud annonce un service au réseau local qui a été préconfiguré pour votre environnement de démonstration :
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-metal-lb-l2-advertisements.yaml
+----
+
+Si votre cluster est RHOCP 4.14 ou une version ultérieur et qu'il utilise OVNKubernetes comme backend réseau, vous devez activer le transfert global pour que MetalLB puisse fonctionner sur une interface réseau secondaire.
+
+Vérifiez le backend réseau utilisé par votre cluster:
+
+[source,bash,role=execute]
+----
+oc get network.operator cluster --output=jsonpath='{.spec.defaultNetwork.type}'
+----
+Si le backend est OVNKubernetes, exécutez la commande suivante pour activer le transfert IP global :
+
+[source,bash,role=execute]
+----
+oc patch network.operator cluster -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"ipForwarding": "Global"}}}}}' --type=merge
+----
