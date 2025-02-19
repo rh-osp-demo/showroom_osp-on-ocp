@@ -1,0 +1,249 @@
+= Configurer le plan de données
+
+En utilisant un fichier yaml préconfiguré (*files/osp-ng-dataplane-netconfig.yaml*), nous allons configurer la topologie pour chaque réseau du plan de données.
+
+Changez de répertoire vers les fichiers:
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files
+----
+
+Appliquez la *configuration réseau*:
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-dataplane-netconfig.yaml
+----
+
+== Créer une VM pour le plan de données
+
+Déconnectez-vous du bastion pour revenir à la machine hyperviseur:
+
+[source,bash,role=execute]
+----
+logout
+----
+
+.Exemple de sortie
+----
+[lab-user@hypervisor ~]#
+---- 
+
+Créez le noeud compute en machine virtuelle sur l'hyperviseur :
+
+[source,bash,role=execute]
+----
+sudo -i
+cd /var/lib/libvirt/images
+cp rhel-9.4-x86_64-kvm.qcow2 rhel9-guest.qcow2
+qemu-img info rhel9-guest.qcow2
+qemu-img resize rhel9-guest.qcow2 +90G
+chown -R qemu:qemu rhel9-*.qcow2
+virt-customize -a rhel9-guest.qcow2 --run-command 'growpart /dev/sda 4'
+virt-customize -a rhel9-guest.qcow2 --run-command 'xfs_growfs /'
+virt-customize -a rhel9-guest.qcow2 --root-password password:redhat
+virt-customize -a rhel9-guest.qcow2 --run-command 'systemctl disable cloud-init'
+virt-customize -a /var/lib/libvirt/images/rhel9-guest.qcow2 --ssh-inject root:file:/root/.ssh/id_rsa.pub
+virt-customize -a /var/lib/libvirt/images/rhel9-guest.qcow2 --selinux-relabel
+qemu-img create -f qcow2 -F qcow2 -b /var/lib/libvirt/images/rhel9-guest.qcow2 /var/lib/libvirt/images/osp-compute-0.qcow2
+virt-install --virt-type kvm --ram 16384 --vcpus 4 --cpu=host-passthrough --os-variant rhel8.4 --disk path=/var/lib/libvirt/images/osp-compute-0.qcow2,device=disk,bus=virtio,format=qcow2 --network network:ocp4-provisioning --network network:ocp4-net --boot hd,network --noautoconsole --vnc --name osp-compute0 --noreboot
+virsh start osp-compute0
+----
+
+=== Connecter vous sur le noeud compute et vérifier 
+
+Vérifiez l'adresse IP à partir de 192.168.123.0/24
+
+[source,bash,role=execute]
+----
+watch virsh domifaddr osp-compute0 --source agent
+----
+
+.Exemple de sortie
+[source,bash]
+----
+Every 2.0s: virsh domifaddr osp-compute0 --source agent                                                                                                 hypervisor: Wed Apr 17 07:03:13 2024
+
+ Name       MAC address          Protocol     Address
+-------------------------------------------------------------------------------
+ lo         00:00:00:00:00:00    ipv4         127.0.0.1/8
+ -          -                    ipv6         ::1/128
+ eth0       52:54:00:c0:0a:26    ipv4         172.22.0.202/24
+ -          -                    ipv6         fe80::16:d083:92f4:f201/64
+ eth1       52:54:00:e5:ce:09    ipv4         192.168.123.61/24
+ -          -                    ipv6         fe80::bfc0:e5db:a655:729f/64
+----
+
+(CTRL + C pour continuer)
+
+[source,bash,role=execute]
+----
+virsh domifaddr osp-compute0 --source agent
+----
+
+Utilisez l'adresse IP attribuée à `eth1` ci-dessus à l'étape suivante.
+
+=== Configurer les périphériques Ethernet sur le noeud compute.
+
+Connectez-vous en SSH à la nouvelle VM.
+Il n'y a pas de mot de passe.
+
+[source,bash,role=execute]
+----
+ssh root@192.168.123.61
+----
+
+[source,bash,role=execute]
+----
+sudo hostnamectl set-hostname edpm-compute-0.aio.example.com
+nmcli co delete 'Wired connection 1'
+nmcli con add con-name "static-eth0" ifname eth0 type ethernet ip4 172.22.0.100/24 ipv4.dns "172.22.0.89"
+nmcli con up "static-eth0"
+nmcli co delete 'Wired connection 2'
+nmcli con add con-name "static-eth1" ifname eth1 type ethernet ip4 192.168.123.61/24 ipv4.dns "192.168.123.100" ipv4.gateway "192.168.123.1"
+nmcli con up "static-eth1"
+----
+
+Et déconnectez-vous de la VM
+
+[source,bash,role=execute]
+----
+logout
+----
+
+Capturer un instantané du noeud compute
+
+[source,bash,role=execute]
+----
+virsh snapshot-create-as osp-compute0 preprovisioned
+----
+
+Définir la clé SSH
+
+[source,bash,role=execute]
+----
+sudo -i
+scp /root/.ssh/id_rsa root@192.168.123.100:/root/.ssh/id_rsa_compute
+scp /root/.ssh/id_rsa.pub root@192.168.123.100:/root/.ssh/id_rsa_compute.pub
+----
+
+AVERTISSEMENT : cette erreur peut initialement se produire en raison d'un fichier hosts inconnu.
+Réessayez pour vous assurer que les deux fichiers sont copiés.
+
+=== Terminer le plan de données
+
+Connectez-vous au serveur *bastion* (n'oubliez pas que le mot de passe du bastion est *redhat*) :
+
+[source,bash,role=execute]
+----
+sudo -i
+ssh root@192.168.123.100
+----
+
+.Exemple de sortie
+----
+[root@ocp4-bastion ~] #
+----
+
+Changer le répertoire 
+
+[source,bash,role=execute]
+----
+cd ~/labrepo/content/files
+----
+
+Créer un secret pour la connexion ansible et la migration nova des machines virtuelles
+
+[source,bash,role=execute]
+----
+oc create secret generic dataplane-ansible-ssh-private-key-secret --save-config --dry-run=client --from-file=authorized_keys=/root/.ssh/id_rsa_compute.pub --from-file=ssh-privatekey=/root/.ssh/id_rsa_compute --from-file=ssh-publickey=/root/.ssh/id_rsa_compute.pub -n openstack -o yaml | oc apply -f-
+ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
+oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
+----
+
+Créez un secret pour le gestionnaire d'abonnements et un secret pour le registre Red Hat :
+
+[source,bash,role=execute]
+----
+echo -n "your_username" | base64
+echo -n "your_password" | base64
+----
+
+[source,bash,role=execute]
+----
+oc apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: subscription-manager
+data:
+  username: <base64 encoded subscription-manager username>
+  password: <base64 encoded subscription-manager password>
+EOF
+----
+
+Créez un secret pour le gestionnaire d'abonnements et un secret pour le registre Red Hat :
+
+[IMPORTANT]
+
+Ajoutez votre nom d'utilisateur et votre mot de passe
+
+[source,bash,role=execute]
+----
+oc create secret generic redhat-registry --from-literal edpm_container_registry_logins='{"registry.redhat.io": {"<username>": "<password>"}}' -n openstack
+----
+
+Déployer le plan de données
+
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-dataplane-node-set-deploy.yaml
+oc apply -f osp-ng-dataplane-deployment.yaml
+----
+
+Vous pouvez afficher les journaux Ansible pendant l'exécution du déploiement :
+
+[source,bash,role=execute]
+----
+oc logs -l app=openstackansibleee -f --max-log-requests 10
+----
+
+.Exemple de sortie
+----
+(...)
+PLAY RECAP *********************************************************************
+edpm-compute-0             : ok=53   changed=26   unreachable=0    failed=0    skipped=54   rescued=0    ignored=0
+----
+
+Ctrl-C pour quitter.
+
+Vérifiez que le plan de données est déployé.
+
+REMARQUE : Cela prend plusieurs minutes.
+
+[source,bash,role=execute]
+----
+oc get openstackdataplanedeployment
+----
+
+Répétez la requête jusqu'à ce que vous voyiez ce qui suit :
+
+.Exemple de sortie
+----
+NAME                  STATUS   MESSAGE
+openstack-edpm-ipam   True     Setup Complete
+----
+
+[source,bash,role=execute]
+----
+oc get openstackdataplanenodeset
+----
+
+Répétez la requête jusqu'à ce que vous voyiez ce qui suit :
+
+.Exemple de sortie
+----
+NAME                  STATUS   MESSAGE
+openstack-edpm-ipam   True     NodeSet Ready
+----
