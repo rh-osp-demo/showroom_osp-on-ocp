@@ -1,0 +1,19 @@
+= {lab_name}
+
+Bienvenue aux instructions du laboratoire Red Hat OpenStack Services sur OpenShift (RHOSO)
+Ces instructions vous guideront à travers l'installation de la nouvelle génération du produit OpenStack de Red Hat sur un cluster OpenShift existant, en utilisant un hôte bastion et un seul hôte pour le plan de données.
+
+Vous disposez de quatre options d'installation :
+
+* xref:connected-fr.adoc[Installer RHOSO en utilisant le CDN - Environnement connecté]
+* xref:disconnected.adoc[Installer RHOSO en utilisant Satellite et Quay - Environnement déconnecté]
+* xref:updates.adoc[Installer une version précédente de RHOSO pour la mettre à jour vers la dernière version]
+* xref:gitops.adoc[Installer et découvrir RHOSO en utilisant Gitops ArgoCD]
+
+Ensuite, si vous souhaitez effectuer une migration de Vmware vers RHOSO:
+* xref:migration.adoc[Migration de VM de Vmware vers RHOSO en utilisant le kit de migration os-migrate vmware] 
+
+Dans l'environnement de laboratoire, vous pourrez copier et coller les commandes spécifiées dans l'interface CLI.
+Pour certaines étapes, vous devrez peut-être également modifier certaines commandes des instructions.
+
+*Assurez-vous de revoir attentivement toutes les commandes, tant pour leur fonctionnalité que pour leur syntaxe !*
