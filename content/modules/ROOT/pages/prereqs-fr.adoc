@@ -269,7 +269,7 @@ Vérifiez que le démon défini pour le speaker est en cours d'exécution :
 oc get daemonset -n metallb-system speaker
 ----
 
-==== l'opérateur Cert-Manager 
+==== L'opérateur Cert-Manager 
 
 Créez le namespace pour l'opérateur *cert-manager-operator*:
 
