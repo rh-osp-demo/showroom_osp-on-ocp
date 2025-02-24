@@ -331,7 +331,7 @@ spec:
 EOF
 ----
 
-Confirmez que le plan d'installation *cert-manager* se trouve dans l'espace de noms :
+Confirmez que le plan d'installation *cert-manager* se trouve dans le namespace :
 
 [source,bash,role=execute]
 ----
