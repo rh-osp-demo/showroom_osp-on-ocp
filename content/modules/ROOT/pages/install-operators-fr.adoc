@@ -81,9 +81,9 @@ ou
 ----
 oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp -w 
 ----
-+
+
 Vous devriez voir une liste des pods terminés, puis des pods des services openstack en cours d'exécution.
-+
+
 .Exemple de sortie 
 ----
 NAME                                                              READY   STATUS    RESTARTS   AGE
