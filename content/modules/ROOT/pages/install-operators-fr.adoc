@@ -12,7 +12,7 @@ cd labrepo/content/files
 
 . Installer les Opérateurs OpenStack
 +
-La prochaine étape pour installer les Opérateurs OpenStack sera de créer le projet openstack-operators :
+Il faut en premier créer le projet openstack-operators dans lequel les opérateurs openstack seront déployés : 
 +
 [source,bash,role=execute]
 ----
