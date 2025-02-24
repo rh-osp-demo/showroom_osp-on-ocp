@@ -134,7 +134,8 @@ Répétez cette commande jusqu'à ce que vous obteniez le résultat souhaité :
 ----
 oc get clusterserviceversion -n openshift-nmstate  -o custom-columns=Name:.metadata.name,Phase:.status.phase
 ----
-
+ou utilisez la même commande, mais avec l'option -w (wait), qui permet d'attendre les différentes sorties de le commande sans avoir à la rafraichir. 
+   
 .Exemple de sortie
 ----
 Name                                              Phase
