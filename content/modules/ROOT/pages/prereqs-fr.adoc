@@ -154,12 +154,18 @@ metadata:
 EOF
 ----
 
-Confirmez que le déploiement de l'opérateur *nmstate* est en cours d'exécution :
+Confirmez que le déploiement de l'opérateur *nmstate* est réussi :
 
 [source,bash,role=execute]
 ----
 oc get clusterserviceversion -n openshift-nmstate \
  -o custom-columns=Name:.metadata.name,Phase:.status.phase
+----
+
+.Exemple de sortie
+----
+Name                                              Phase
+kubernetes-nmstate-operator.4.16.0-202502111405   Succeeded
 ----
 
 ==== L'opérateur MetalLB
