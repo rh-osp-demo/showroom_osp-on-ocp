@@ -42,7 +42,7 @@ Confirmez qu'un plan d'installation a été créé mais non exécuté (car il n'
 oc get installplan -n openstack-operators
 ----
 
-. Exemple de sortie
+.Exemple de sortie
 ----
 NAME            CSV                       APPROVAL   APPROVED
 install-lfs4j   octavia-operator.v1.0.0   Manual     false
@@ -82,7 +82,7 @@ ou
 oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp -w 
 ----
 
-Vous devriez voir une liste des pods terminés, puis des pods des services openstack en cours d'exécution.
+Vous devriez voir une liste des pods (cette étape prend quelques minutes) 
 
 .Exemple de sortie 
 ----
@@ -111,4 +111,4 @@ swift-operator-controller-manager-5fdb4c94d9-bp9l6                2/2     Runnin
 telemetry-operator-controller-manager-564b55fd8-tzmcb             2/2     Running   0          8m11s
 ---- 
 
-Les opérateurs Openstack sont maintenant installés
+Les opérateurs Openstack sont maintenant installés !
