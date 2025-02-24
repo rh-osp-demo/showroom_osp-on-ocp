@@ -1,4 +1,4 @@
-= Installation des services Red Hat Openstack sur OpenShift - Environnement connecté
+= Installation de Red Hat Openstack Services On OpenShift - Environnement connecté
 
 Dans ce laboratoire, vous utiliserez l'infrastructure suivante :
 
