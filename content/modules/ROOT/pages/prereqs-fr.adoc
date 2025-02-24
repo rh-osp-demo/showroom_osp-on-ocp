@@ -195,7 +195,7 @@ metadata:
 EOF
 ----
 
-Confirmez que l’OperatorGroup est installé dans l’espace de noms :
+Confirmez que l’OperatorGroup est installé dans le namespace :
 
 [source,bash,role=execute]
 ----
