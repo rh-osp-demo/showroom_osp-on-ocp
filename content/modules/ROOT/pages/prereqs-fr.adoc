@@ -138,7 +138,7 @@ oc get clusterserviceversion -n openshift-nmstate  -o custom-columns=Name:.metad
 .Exemple de sortie
 ----
 Name                                              Phase
-kubernetes-nmstate-operator.4.13.0-202402211707   Succeeded
+kubernetes-nmstate-operator.4.16.0-202502111405   Succeeded
 ----
 
 Créer une instance de l'opérateur *nmstate* :
