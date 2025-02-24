@@ -12,7 +12,7 @@ cd labrepo/content/files
 
 . Installer les Opérateurs OpenStack
 +
-La prochaine étape pour installer les Opérateurs OpenStack sera de créer le projet openstack-operators pour les opérateurs RHOSO:
+La prochaine étape pour installer les Opérateurs OpenStack sera de créer le projet openstack-operators :
 +
 [source,bash,role=execute]
 ----
