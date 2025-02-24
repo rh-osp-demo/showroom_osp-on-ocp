@@ -1,4 +1,4 @@
-= Installer l'opérateur OpenStack
+= Installer les opérateurs OpenStack
 
 . Cloner le dépot de fichier
 +
@@ -34,18 +34,22 @@ Créez les nouveaux CRs **CatalogSource, OperatorGroup, et Subscription** dans l
 ----
 oc apply -f osp-ng-openstack-operator.yaml
 ----
-. Installez l'opérateur en utilisant la stratégie d'approbation manuelle. Confirmez qu'un plan d'installation a été créé mais non exécuté car il n'a pas été approuvé:
+. Installez l'opérateur en utilisant la stratégie d'approbation manuelle. 
++
+Confirmez qu'un plan d'installation a été créé mais non exécuté (car il n'a pas été approuvé):
 [source,bash,role=execute]
 ----
 oc get installplan -n openstack-operators
 ----
-.Exemple de sortie
+
+. Exemple de sortie
 ----
 NAME            CSV                       APPROVAL   APPROVED
 install-lfs4j   octavia-operator.v1.0.0   Manual     false
 ----
 . Approuver l'installation de l'opérateur en mettant à jour le champ approuvé de l'InstallPlan:
 [source,bash,role=execute]
++
 ----
 oc patch installplan install-lfs4j  \
     --namespace openstack-operators \
@@ -71,10 +75,14 @@ oc get pods -n openstack-operators
 [source, bash,role=execute]
 ----
 oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp
+---- 
+ou 
+[source, bash,role=execute]
+----
+oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp -w 
 ----
 +
 Vous devriez voir une liste des pods terminés, puis des pods des services openstack en cours d'exécution.
-Cela devrait ressembler à:
 +
 .Exemple de sortie 
 ----
@@ -101,4 +109,6 @@ placement-operator-controller-manager-84dc689f7c-trfxb            2/2     Runnin
 rabbitmq-cluster-operator-7d6b597db7-mtknb                        1/1     Running   0          6m16s
 swift-operator-controller-manager-5fdb4c94d9-bp9l6                2/2     Running   0          6m22s
 telemetry-operator-controller-manager-564b55fd8-tzmcb             2/2     Running   0          8m11s
-----
+---- 
+
+Les opérateurs Openstack sont maintenant installés
