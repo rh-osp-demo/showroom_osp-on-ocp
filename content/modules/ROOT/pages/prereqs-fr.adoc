@@ -361,3 +361,5 @@ NAME                                      READY   STATUS    RESTARTS   AGE
 cert-manager-cainjector-5df47878b-knmwg   1/1     Running   0          19s
 cert-manager-webhook-66c75fcddf-8kldt     1/1     Running   0          23s
 ----
+
+Les 3 opérateurs requis pour l'installation d'Openstack sont maintenant installés et configurés. 
