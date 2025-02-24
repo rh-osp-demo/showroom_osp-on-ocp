@@ -353,7 +353,7 @@ Vérifiez que les pods cert-manager sont opérationnels en entrant la commande s
 oc get pods -n cert-manager
 ----
 
-Répétez la commande jusqu'à ce que tous les modules affichent READY 1/1
+Répétez la commande (ou utilisez l'option -w) jusqu'à ce que tous les modules affichent READY 1/1
 
 .Exemple de sortie
 ----
