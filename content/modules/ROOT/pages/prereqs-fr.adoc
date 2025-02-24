@@ -139,7 +139,7 @@ ou utilisez la même commande, mais avec l'option -w (wait), qui permet d'attend
 .Exemple de sortie
 ----
 Name                                              Phase
-kubernetes-nmstate-operator.4.13.0-202402211707   Succeeded
+kubernetes-nmstate-operator.4.16.0-202502111405   Succeeded
 ----
 
 Créer une instance de l'opérateur *nmstate* :
