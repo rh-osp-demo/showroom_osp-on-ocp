@@ -1,4 +1,4 @@
-= Configuration, Installation et Utilisation des Services Red Hat OpenStack sur OpenShift
+= Configuration, Installation et Utilisation de Red Hat OpenStack Services On OpenShift
 
 == Accédez à Votre Environnement de Laboratoire
 
