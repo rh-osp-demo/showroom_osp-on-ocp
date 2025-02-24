@@ -19,7 +19,7 @@ Il faut en premier créer le projet openstack-operators dans lequel les opérate
 oc new-project openstack-operators
 ----
 
-. Créer le projet `openstack` pour l'environnement RHOSO déployé:
+. Créer maintenant le projet `openstack` dans lequel Openstack va être déployé :
 +
 [source,bash,role=execute]
 ----
