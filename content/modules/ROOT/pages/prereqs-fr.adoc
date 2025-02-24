@@ -246,14 +246,14 @@ spec:
 EOF
 ----
 
-Vérifiez que le déploiement du contrôleur est en cours d’exécution :
+Vérifiez que le déploiement du contrôleur metallb est en cours d’exécution :
 
 [source,bash,role=execute]
 ----
 oc get deployment -n metallb-system controller
 ----
 
-Répétez la commande jusqu'à ce que AVAILABLE soit égal à 1
+Répétez la commande (ou utilisez l'option -w) jusqu'à ce que AVAILABLE soit égal à 1
 
 Vérifiez que le démon défini pour le speaker est en cours d'exécution :
 
