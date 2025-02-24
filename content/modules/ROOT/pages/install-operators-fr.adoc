@@ -28,7 +28,7 @@ oc new-project openstack
 
 . Configurer la **Source du catalogue (CatalogSource), le groupe d'opérateur (OperatorGroup) et l'abonnement (Subscription)** pour l'**Operateur Openstack** en utilisant votre registre:
 +
-Créez les nouveaux CRs **CatalogSource, OperatorGroup, and Subscription** dans le namespace **openstack** à partir du fichier **files/openstack-operators.yaml**: Vous pouvez couper et coller les fichiers yaml référencés depuis le dépôt ou vous pourriez cloner le dépôt sur le bastion, ce que ce guide supposera: 
+Créez les nouveaux CRs **CatalogSource, OperatorGroup, et Subscription** dans le namespace **openstack** à partir du fichier **files/openstack-operators.yaml**:  
 +
 [source,bash,role=execute]
 ----
