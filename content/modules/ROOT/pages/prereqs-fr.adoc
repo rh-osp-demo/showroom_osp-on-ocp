@@ -228,7 +228,7 @@ oc get clusterserviceversion -n metallb-system \
  -o custom-columns=Name:.metadata.name,Phase:.status.phase
 ----
 
-Répétez la requête jusqu'à ce que la phase soit réussie.
+Répétez la requête jusqu'à ce que la phase soit réussie ou utiliser la commande avec l'option -w.
 
 Créez une instance unique d'une ressource *metallb* :
 
