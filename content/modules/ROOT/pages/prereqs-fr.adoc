@@ -358,8 +358,10 @@ Répétez la commande (ou utilisez l'option -w) jusqu'à ce que tous les modules
 .Exemple de sortie
 ----
 NAME                                      READY   STATUS    RESTARTS   AGE
-cert-manager-cainjector-5df47878b-knmwg   1/1     Running   0          19s
-cert-manager-webhook-66c75fcddf-8kldt     1/1     Running   0          23s
+cert-manager-54b4497999-9tzsr             1/1     Running   0          36m
+cert-manager-cainjector-7459fbc5c-l4ggd   1/1     Running   0          37m
+cert-manager-webhook-858d54b79d-l5qgd     1/1     Running   0          37m
+
 ----
 
 Les 3 opérateurs requis pour l'installation d'Openstack sont maintenant installés et configurés. 
