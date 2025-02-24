@@ -81,7 +81,7 @@ spec:
 EOF
 ----
 
-Crréez l'*OperatorGroup*:
+Créez l'*OperatorGroup*:
 
 [source,bash,role=execute]
 ----
