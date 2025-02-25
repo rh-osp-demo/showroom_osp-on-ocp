@@ -130,8 +130,6 @@ scp /root/.ssh/id_rsa root@192.168.123.100:/root/.ssh/id_rsa_compute
 scp /root/.ssh/id_rsa.pub root@192.168.123.100:/root/.ssh/id_rsa_compute.pub
 ----
 
-AVERTISSEMENT : cette erreur peut initialement se produire en raison d'un fichier hosts inconnu.
-Réessayez pour vous assurer que les deux fichiers sont copiés.
 
 === Terminer le plan de données
 
