@@ -162,13 +162,17 @@ ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
 oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
 ----
 
-Créez un secret pour le gestionnaire d'abonnements et un secret pour le registre Red Hat :
+Créez un secret pour subscription-manager et un secret pour le registre Red Hat. Vous devez avoir un login sur notre portail.  
+
+SECRET POUR SUBSCRIPTION-MANAGER
 
 [source,bash,role=execute]
 ----
 echo -n "your_username" | base64
 echo -n "your_password" | base64
 ----
+
+Remplacez dans la prochaine commande, en utilisant votre nom d'usager et mot de passe encrypté, la section data comme identifié 
 
 [source,bash,role=execute]
 ----
@@ -183,11 +187,9 @@ data:
 EOF
 ----
 
-Créez un secret pour le gestionnaire d'abonnements et un secret pour le registre Red Hat :
+SECRET POUR REGISTRE REDHAT
 
-[IMPORTANT]
-
-Ajoutez votre nom d'utilisateur et votre mot de passe
+Indiquez votre nom d'utilisateur et votre mot de passe (non-encrypté) dans les champs <username> et <password> de la commande suivante :  
 
 [source,bash,role=execute]
 ----
@@ -220,7 +222,7 @@ Ctrl-C pour quitter.
 
 Vérifiez que le plan de données est déployé.
 
-REMARQUE : Cela prend plusieurs minutes.
+REMARQUE : Cela prend plusieurs minutes (et plusieurs minutes!).
 
 [source,bash,role=execute]
 ----
