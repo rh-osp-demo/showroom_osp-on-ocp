@@ -13,6 +13,7 @@ From the Bastion:
 
 [source,bash,role=execute]
 ----
+oc project openstack
 oc patch openstackcontrolplanes/openstack-galera-network-isolation -p='[{"op": "replace", "path": "/spec/horizon/enabled", "value": true}]' --type json
 oc patch openstackcontrolplane/openstack-galera-network-isolation -p '{"spec": {"horizon": {"template": {"customServiceConfig": "USE_X_FORWARDED_HOST = False" }}}}' --type=merge
 ----
@@ -21,7 +22,6 @@ Check that the horizon pods are running after enabling it:
 
 [source,bash,role=execute]
 ----
-oc project openstack
 oc get pods -n openstack
 ----
 
@@ -55,16 +55,17 @@ Horizon username is `admin` password `openstack`
 
 == Deploy a Conversion Host in your OpenStack environment 
 
-In the hypervisor:
+In the bastion:
 
-Copy the Centos 9.4 to the bastion host:
+Download the latest Centos 10 qcow2 that it will be used to deploy the conversion host:
 
 [source,bash,role=execute]
 ----
-scp /var/lib/libvirt/images/centos9-kvm.qcow2 root@192.168.123.100:
+cd
+curl -O -L https://cloud.centos.org/centos/10-stream/x86_64/images/CentOS-Stream-GenericCloud-10-latest.x86_64.qcow2
 ----
 
-In the bastion, map the Compute nodes to the Compute cell that they are connected to:
+Map the Compute nodes to the Compute cell that they are connected to:
 
 [source,bash,role=execute]
 ----
@@ -77,10 +78,10 @@ Copy the bastion public key to the openstackclient pod:
 oc cp /root/.ssh/id_rsa.pub openstack/openstackclient:/home/cloud-admin/.
 ----
 
-Copy the Centos 9.4 qcow image to the openstackclient pod:
+Copy the Centos 10 qcow image to the openstackclient pod:
 [source,bash,role=execute]
 ----
-oc cp /root/centos9-kvm.qcow2 openstack/openstackclient:/home/cloud-admin/.
+oc cp /root/CentOS-Stream-GenericCloud-10-latest.x86_64.qcow2 openstack/openstackclient:/home/cloud-admin/.
 ----
 
 Access to the openstackclient pod
@@ -127,7 +128,7 @@ Create image and flavors
 ----
 openstack flavor create --ram 4096 --disk 35 --vcpu 2 --public migrate
 openstack keypair create --public-key ~/id_rsa.pub bastion_key
-openstack image create centos9-image --container-format bare --disk-format qcow2 --public --file centos9-kvm.qcow2
+openstack image create centos10-image --container-format bare --disk-format qcow2 --public --file CentOS-Stream-GenericCloud-10-latest.x86_64.qcow2
 ----
 
 Create the Server and a Floating IP
@@ -136,7 +137,7 @@ Create the Server and a Floating IP
 ----
 openstack server create \
     --flavor migrate --key-name bastion_key --network private --security-group basic \
-    --image centos9-image centos9-ch
+    --image centos10-image centos10-ch
 openstack floating ip create public --floating-ip-addres 192.168.123.95
 ----
 
@@ -144,7 +145,7 @@ Add the floating IP above to the new VM in the next step.
 
 [source,bash,role=execute]
 ----
-openstack server add floating ip centos9-ch 192.168.123.95
+openstack server add floating ip centos10-ch 192.168.123.95
 exit
 ----
 

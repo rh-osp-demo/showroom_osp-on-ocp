@@ -11,6 +11,7 @@ Vous disposez de quatre options d'installation :
 * xref:gitops.adoc[Installer et découvrir RHOSO en utilisant Gitops ArgoCD]
 
 Ensuite, si vous souhaitez effectuer une migration de Vmware vers RHOSO:
+
 * xref:migration.adoc[Migration de VM de Vmware vers RHOSO en utilisant le kit de migration os-migrate vmware] 
 
 Dans l'environnement de laboratoire, vous pourrez copier et coller les commandes spécifiées dans l'interface CLI.
