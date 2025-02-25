@@ -121,7 +121,7 @@ Capturer un instantané du noeud compute
 virsh snapshot-create-as osp-compute0 preprovisioned
 ----
 
-Définir la clé SSH
+Copier les clés SSH
 
 [source,bash,role=execute]
 ----
