@@ -82,7 +82,6 @@ copy_metadata_to_conv_host: true
 used_mapped_networks: false
 
 # Use for settings rhel network device:
-target_os: rhel
 os_migrate_configure_network: true
 
 vms_list:

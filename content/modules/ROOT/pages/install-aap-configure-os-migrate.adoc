@@ -228,7 +228,6 @@ Navigate that URL with your browser and finish the Ansible Automation Platform b
 ----
 ansible_host: localhost
 ansible_connection: local
-ansible_python_interpreter: /usr/bin/python3
 ----
 
 Click *Create Host*.
@@ -310,8 +309,6 @@ os_migrate_create_network_port: true
 copy_metadata_to_conv_host: true
 used_mapped_networks: false
 
-# Use for configuring RHEL network device:
-target_os: rhel
 os_migrate_configure_network: true
 
 vms_list:
