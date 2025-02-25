@@ -51,7 +51,7 @@ virt-install --virt-type kvm --ram 16384 --vcpus 4 --cpu=host-passthrough --os-v
 virsh start osp-compute0
 ----
 
-=== Connecter vous sur le noeud compute et vérifier 
+=== Connecter vous sur le noeud compute 
 
 Vérifiez l'adresse IP à partir de 192.168.123.0/24
 
@@ -59,6 +59,8 @@ Vérifiez l'adresse IP à partir de 192.168.123.0/24
 ----
 watch virsh domifaddr osp-compute0 --source agent
 ----
+
+Il peut s'écouler quelques secondes avant que les adresses ips n'apparaissent 
 
 .Exemple de sortie
 [source,bash]
