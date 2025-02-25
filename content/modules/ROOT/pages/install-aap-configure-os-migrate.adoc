@@ -1,0 +1,365 @@
+= Install, configure AAP and launch a migration 
+
+== Install Ansible Execution Platform
+
+In the bastion:
+
+Create the *ansible-automation-platform* namespace:
+
+[source,bash,role=execute]
+----
+oc new-project ansible-automation-platform
+----
+
+Create the *OperatorGroup*:
+
+[source,bash,role=execute]
+----
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: ansible-automation-platform-operator
+  namespace: ansible-automation-platform
+spec:
+  targetNamespaces:
+    - ansible-automation-platform
+EOF
+----
+
+Confirm the OperatorGroup is installed in the namespace:
+
+[source,bash,role=execute]
+----
+oc get operatorgroup -n ansible-automation-platform
+----
+
+Subscribe to the *ansible-automation-platform-operator* Operator:
+
+[source,bash,role=execute]
+----
+cat << EOF| oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ansible-automation-platform
+  namespace: ansible-automation-platform
+spec:
+  channel: 'stable-2.5'
+  installPlanApproval: Automatic
+  name: ansible-automation-platform-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+EOF
+----
+
+Confirm that the *ansible-automation-platform-operator* Operator is running.
+Repeat this command until you see the desired output:
+
+[source,bash,role=execute]
+----
+oc get clusterserviceversion -n ansible-automation-platform -o custom-columns=Name:.metadata.name,Phase:.status.phase
+----
+
+.Sample Output
+----
+Name                                               Phase
+aap-operator.v2.5.0-0.1739248042                   Succeeded
+----
+
+In the bastion terminal, clone the repo if you didn't do it during the RHOSO installation
+[source,bash,role=execute]
+----
+git clone https://github.com/rh-osp-demo/showroom_osp-on-ocp.git labrepo
+cd labrepo/content/files
+----
+
+In the bastion, Configure NFS storage class to provide RWX storage class to AAP:
+
+[source,bash,role=execute]
+----
+mkdir /nfs/pv6
+mkdir /nfs/pv7
+mkdir /nfs/pv8
+mkdir /nfs/pv9
+mkdir /nfs/pv10
+mkdir /nfs/pv11
+chmod 777 /nfs/pv*
+----
+
+[source,bash,role=execute]
+----
+oc create -f nfs-storage.yaml
+----
+
+Create a CR of the *Ansible Automation Platform*:
+
+[source,bash,role=execute]
+----
+oc apply -f - <<EOF
+apiVersion: aap.ansible.com/v1alpha1
+kind: AnsibleAutomationPlatform
+metadata:
+  name: aap-for-rhoso-migrations
+  namespace: ansible-automation-platform
+spec:
+  # Platform
+  image_pull_policy: IfNotPresent
+  # Components
+  controller:
+    disabled: false
+  eda:
+    disabled: false
+  hub:
+    disabled: false
+    ## Modify to contain your RWM storage class name
+    storage_type: file
+    file_storage_storage_class: nfs
+    file_storage_size: 10Gi
+
+    ## uncomment if using S3 storage for Content pod
+    # storage_type: S3
+    # object_storage_s3_secret: example-galaxy-object-storage
+
+    ## uncomment if using Azure storage for Content pod
+    # storage_type: azure
+    # object_storage_azure_secret: azure-secret-name
+  lightspeed:
+    disabled: true
+EOF
+----
+
+Confirm that the *Ansible Automation Platform* pods are running:
+
+[source,bash,role=execute]
+----
+oc get pods -n ansible-automation-platform
+----
+.Sample Output
+----
+NAME                                                              READY   STATUS      RESTARTS   AGE
+aap-for-rhoso-migrations-controller-migration-4.6.8-kls8d         0/1     Completed   0          8m23s
+aap-for-rhoso-migrations-controller-task-78d76d4596-mn8vc         4/4     Running     0          9m7s
+aap-for-rhoso-migrations-controller-web-86f9d988-cvc8h            3/3     Running     0          9m9s
+aap-for-rhoso-migrations-eda-activation-worker-59fd79b5c9-d6vcb   1/1     Running     0          9m32s
+aap-for-rhoso-migrations-eda-activation-worker-59fd79b5c9-hdg92   1/1     Running     0          9m32s
+aap-for-rhoso-migrations-eda-api-864755bcc8-sk87f                 3/3     Running     0          9m34s
+aap-for-rhoso-migrations-eda-default-worker-7d54fdb44c-9ngrc      1/1     Running     0          9m33s
+aap-for-rhoso-migrations-eda-default-worker-7d54fdb44c-dn8xm      1/1     Running     0          9m33s
+aap-for-rhoso-migrations-eda-event-stream-674db468c7-c9xxd        2/2     Running     0          9m29s
+aap-for-rhoso-migrations-eda-scheduler-99dccf864-n7nzc            1/1     Running     0          9m31s
+aap-for-rhoso-migrations-eda-scheduler-99dccf864-skzdj            1/1     Running     0          9m31s
+aap-for-rhoso-migrations-gateway-d9894b76f-dcfn4                  2/2     Running     0          11m
+aap-for-rhoso-migrations-hub-api-668b966979-vb8lq                 1/1     Running     0          9m1s
+aap-for-rhoso-migrations-hub-content-745c569598-47vs9             1/1     Running     0          9m16s
+aap-for-rhoso-migrations-hub-content-745c569598-cdnc4             1/1     Running     0          9m16s
+aap-for-rhoso-migrations-hub-redis-655c475d7c-p5ftl               1/1     Running     0          9m25s
+aap-for-rhoso-migrations-hub-web-57d489786-d5wbt                  1/1     Running     0          9m30s
+aap-for-rhoso-migrations-hub-worker-878857467-g687h               1/1     Running     0          9m11s
+aap-for-rhoso-migrations-postgres-15-0                            1/1     Running     0          12m
+aap-for-rhoso-migrations-redis-0                                  1/1     Running     0          12m
+aap-gateway-operator-controller-manager-55fd699d8b-ddz9z          2/2     Running     0          66m
+ansible-lightspeed-operator-controller-manager-7cdf859495-hlnct   2/2     Running     0          66m
+automation-controller-operator-controller-manager-6c5989994dg8m   2/2     Running     0          66m
+automation-hub-operator-controller-manager-85dfcfdfb9-c8fjw       2/2     Running     0          66m
+eda-server-operator-controller-manager-d489994c8-x8f4m            2/2     Running     0          66m
+resource-operator-controller-manager-58d495d4b5-ck42z             2/2     Running     0          66m
+----
+
+Get the secret to access AAP dashboard:
+
+[source,bash,role=execute]
+----
+oc get secret/aap-for-rhoso-migrations-admin-password -o jsonpath={.data.password} -n ansible-automation-platform | base64 --decode
+----
+
+Get the route to access AAP dashboard:
+
+[source,bash,role=execute]
+----
+oc get routes -n ansible-automation-platform
+----
+The URL of your AAP dashboard is:
+[source,bash,role=execute,subs=attributes]
+----
+aap-for-rhoso-migrations-ansible-automation-platform.apps.{guid}.dynamic.redhatworkshops.io
+----
+
+Navigate that URL with your browser and finish the Ansible Automation Platform by subscribing the AAP.
+
+== Configuring AAP to Launch a Migration
+
+=== Creating Credentials
+
+1. From the navigation panel, go to *Automation Execution* → *Credentials*.
+2. Click *Create Credentials* and set the following parameters:
+   * **Name:** Bastion key
+   * **Credential Type:** Machine
+   * **Username:** cloud-user
+   * **SSH Private Key:** File content from `/root/.ssh/id_rsa` on the bastion
+
+=== Creating an Inventory
+
+1. From the navigation panel, go to *Automation Execution* → *Infrastructure* → *Inventories*.
+2. Click *Create Inventory* → *Create Inventory* and set the following parameters:
+   * **Name:** Conversion Host Inventory
+   * **Organization:** Default
+3. Click *Create Inventory*.
+
+=== Creating Hosts
+
+==== Conversion Host
+
+1. From the navigation panel, go to *Automation Execution* → *Infrastructure* → *Hosts*.
+2. Click *Create Host* and set the following parameters:
+   * **Name:** conversion_host
+   * **Inventory:** Conversion Host Inventory
+3. Click *Create Host*.
+
+==== Migrator Host
+
+1. From the navigation panel, go to *Automation Execution* → *Infrastructure* → *Hosts*.
+2. Click *Create Host* and set the following parameters:
+   * **Name:** migrator
+   * **Inventory:** Conversion Host Inventory
+   * **Variables:**
+
+[source,bash,role=execute]
+----
+ansible_host: localhost
+ansible_connection: local
+ansible_python_interpreter: /usr/bin/python3
+----
+
+Click *Create Host*.
+
+=== Creating the `conversion_host` Group
+
+1. From the navigation panel, go to *Automation Execution* → *Infrastructure* → *Inventories*.
+2. Inside the *Conversion Host Inventory*, go to the *Groups* tab.
+3. Click *Add Group* and set:
+   * **Name:** conversion_host
+4. Click *Create Group*.
+5. Inside the *Conversion Host Inventory*:
+   * Navigate to the *Groups* tab.
+   * Click on `conversion_host`.
+   * Go to the *Hosts* tab within the group.
+   * Click *Add*, select `192.168.123.95` from the list, and click *Save*.
+
+=== Creating an Execution Environment
+
+1. From the navigation panel, go to *Automation Execution* → *Infrastructure* → *Execution Environments*.
+2. Click *Create Execution Environment* and set the following parameters:
+   * **Name:** osm-migration-kit Execution Environment
+   * **Image:** `quay.io/rhn_engineering_mbultel/osm-fedora`
+3. Click *Create Execution Environment*.
+
+=== Creating a Project
+
+1. From the navigation panel, go to *Automation Execution* → *Projects*.
+2. Click *Create Project* and set the following parameters:
+   * **Name:** osm-migration-kit
+   * **Execution Environment:** osm-migration-kit Execution Environment
+   * **Source Control Type:** Git
+   * **Source Control URL:** `https://github.com/os-migrate/vmware-migration-kit`
+3. Click *Create Project*.
+
+=== Creating the Job Template
+
+==== Preparing the Bastion
+
+Run the following commands to configure OpenStack CLI access:
+
+[source,bash,role=execute]
+----
+oc project openstack
+alias openstack="oc exec -t openstackclient -- openstack"
+----
+
+Retrieve necessary OpenStack parameters:
+
+[source,bash,role=execute]
+----
+SECURITY_GROUP_ID=$(openstack security group list | awk '/ basic / {print $2}')
+PROJECT_ID=$(openstack project list | grep ' admin ' | awk '{print $2}')
+AUTH_URL=$(openstack endpoint list --service identity --interface public -c URL -f value)
+----
+
+Create the `os_migrate_vars.yaml` file:
+
+[source,bash,role=execute,subs=attributes]
+----
+cat << EOF > os_migrate_vars.yaml
+# osm working directory:
+runner_from_aee: true
+os_migrate_vmw_data_dir: /tmp/os-migrate
+copy_openstack_credentials_to_conv_host: false
+
+# Re-use an already deployed conversion host:
+already_deploy_conversion_host: true
+
+# If no mapped network, set the OpenStack network:
+openstack_private_network: private
+
+# Security groups for the instance:
+security_groups: ${SECURITY_GROUP_ID}
+use_existing_flavor: false
+
+# Network settings for OpenStack:
+os_migrate_create_network_port: true
+copy_metadata_to_conv_host: true
+used_mapped_networks: false
+
+# Use for configuring RHEL network device:
+target_os: rhel
+os_migrate_configure_network: true
+
+vms_list:
+  - winweb01-{guid}
+
+# VMware parameters:
+vcenter_hostname: {vcenter_console}
+vcenter_username: {vcenter_full_user}
+vcenter_password: {vcenter_password}
+vcenter_datacenter: RS01
+
+os_cloud_environ: demo.redhat.com
+dst_cloud:
+  auth:
+    auth_url: ${AUTH_URL}
+    username: admin
+    project_id: ${PROJECT_ID}
+    project_name: admin
+    user_domain_name: Default
+    password: openstack
+  region_name: regionOne
+  interface: public
+  insecure: true
+  identity_api_version: 3
+EOF
+----
+
+==== Configuring the Job Template
+
+1. From the navigation panel, go to *Automation Execution* → *Templates*.
+2. Click *Create Template* → *Create Job Template* and set the following parameters:
+   * **Name:** Windows VM Migration
+   * **Inventory:** Conversion Host Inventory
+   * **Project:** osm-migration-kit
+   * **Playbook:** `vmware_migration_kit/playbooks/migration.yml`
+   * **Execution Environment:** osm-migration-kit Execution Environment
+   * **Credentials:** Bastion key
+   * **Extra Variables:** Copy the content of `/root/os_migrate_vars.yaml` from the bastion
+3. Click *Create Job Template*.
+
+=== Running the Migration
+
+1. From the navigation panel, go to *Automation Execution* → *Templates*.
+2. Locate the *Windows VM Migration* template.
+3. Click the *rocket icon* to launch the migration.
+
+== Access to the VM using Horizon
+
+1. Access to Horizon using the URL: https://horizon-openstack.apps.{guid}.dynamic.redhatworkshops.io
+2. In the top panel, Instances, click on the instance: winweb01-{guid}
+3. Click the tab Console to access to the console.
