@@ -49,7 +49,7 @@ Attendez jusqu'à ce que le déploiement du plan de contrôle OpenStack soit ter
 
 [source,bash,role=execute]
 ----
-oc get openstackcontrolplane -n openstack
+oc get openstackcontrolplane -n openstack -w 
 ----
 
 AVERTISSEMENT: Cela peut prendre plusieurs minutes.
