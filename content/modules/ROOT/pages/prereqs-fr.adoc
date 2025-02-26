@@ -106,6 +106,12 @@ Confirmez que l’OperatorGroup est installé dans le namespace:
 oc get operatorgroup -n openshift-nmstate
 ----
 
+.Exemple de sortie
+----
+NAME                AGE
+openshift-nmstate   5s
+----
+
 S'abonner à l'opérateur *nmstate* :
 
 [source,bash,role=execute]
