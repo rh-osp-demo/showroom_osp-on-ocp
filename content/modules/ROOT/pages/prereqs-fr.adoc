@@ -62,6 +62,7 @@ ocp4-worker3.aio.example.com   Ready    worker                 25h   v1.25.16+99
 ----
 
 ==== L'opérateur NMState 
+NMState est un outil de gestion de configuration réseau pour Linux qui permet de configurer et de maintenir l'état du réseau de manière déclarative. Il fournit une API et une bibliothèque qui permettent aux administrateurs système et aux développeurs de définir l'état souhaité d'une configuration réseau plutôt que de spécifier les commandes pour y parvenir.
 
 Créez le namespace pour l'opérateur *NMState*:
 
