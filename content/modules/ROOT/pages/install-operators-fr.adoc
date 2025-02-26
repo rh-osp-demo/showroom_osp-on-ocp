@@ -56,7 +56,8 @@ oc patch installplan install-lfs4j  \
     --namespace openstack-operators \
     --type merge \
     --patch '{"spec":{"approved":true}}'
-----
+---- 
+
 . Confirmez que vous avez installé l'opérateur Openstack, *openstack-operator.openstack-operators*:
 +
 [source,bash,role=execute]
