@@ -355,6 +355,12 @@ oc get clusterserviceversion -n cert-manager-operator \
  -o custom-columns=Name:.metadata.name,Phase:.status.phase
 ----
 
+.Exemple de sortie
+----
+Name                            Phase
+cert-manager-operator.v1.15.0   Succeeded
+----
+
 Vérifiez que les pods cert-manager sont opérationnels en entrant la commande suivante :
 
 [source,bash,role=execute]
