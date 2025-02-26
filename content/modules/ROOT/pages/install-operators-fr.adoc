@@ -74,11 +74,7 @@ oc get pods -n openstack-operators
 
 . Si vous exécutez :
 +
-[source, bash,role=execute]
-----
-oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp
----- 
-ou 
+
 [source, bash,role=execute]
 ----
 oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp -w 
