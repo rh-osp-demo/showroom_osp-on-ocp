@@ -134,7 +134,7 @@ EOF
 ----
 
 Vérifiez que l'opérateur NMstate est en cours d'exécution.
-Répétez cette commande jusqu'à ce que vous obteniez le résultat souhaité :
+Répétez cette commande jusqu'à ce que vous obteniez le résultat Succeeded :
 
 [source,bash,role=execute]
 ----
