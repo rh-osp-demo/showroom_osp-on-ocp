@@ -176,6 +176,7 @@ kubernetes-nmstate-operator.4.16.0-202502111405   Succeeded
 ----
 
 ==== L'opérateur MetalLB
+MetalLB est une solution de Load Balancer pour les clusters Kubernetes qui s'exécutent dans des environnements où les services de type LoadBalancer ne sont pas disponibles nativement (comme dans les installations bare-metal). MetalLB permet ainsi à vos applications Kubernetes d'être accessibles depuis l'extérieur du cluster avec une adresse IP dédiée.
 
 Créez le namespace pour l'opérateur *MetalLB*:
 
