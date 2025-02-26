@@ -278,6 +278,7 @@ oc get daemonset -n metallb-system speaker
 ----
 
 ==== L'opérateur Cert-Manager 
+Cert Manager est un outil de gestion de certificats TLS/SSL pour Kubernetes. Il facilite l'obtention, le renouvellement et l'utilisation des certificats cryptographiques dans les environnements Kubernetes. Cert Manager est devenu un composant essentiel dans de nombreux déploiements Kubernetes pour gérer de manière fiable et automatisée la sécurité TLS des applications. 
 
 Créez le namespace pour l'opérateur *cert-manager-operator*:
 
