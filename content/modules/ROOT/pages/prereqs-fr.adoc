@@ -24,7 +24,7 @@ Pour faciliter les instructions, il sera supposé que le dépôt a été cloné
 
 === Prérequis pour installer les Opérateurs 
 
-Il y a trois opérateurs qui doivent être installés avant de pouvoir installer l'Opérateur OpenStack, https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/kubernetes-nmstate#installing-the-kubernetes-nmstate-operator-cli[NMState  Operator^] https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install[MetalLB  Operator^]  et https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html[Cert-Manager + Operator^]
+Il y a trois opérateurs qui doivent être installés avant de pouvoir installer les opérateurs OpenStack, https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/kubernetes-nmstate#installing-the-kubernetes-nmstate-operator-cli[NMState  Operator^] https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install[MetalLB  Operator^]  et https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html[Cert-Manager + Operator^]
 
 ==== Accès au Cluster
 
