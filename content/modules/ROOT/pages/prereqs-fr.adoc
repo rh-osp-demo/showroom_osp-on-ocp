@@ -139,15 +139,17 @@ Répétez cette commande jusqu'à ce que vous obteniez le résultat Succeeded :
 
 [source,bash,role=execute]
 ----
-oc get clusterserviceversion -n openshift-nmstate  -o custom-columns=Name:.metadata.name,Phase:.status.phase
+oc get clusterserviceversion -n openshift-nmstate  -o custom-columns=Name:.metadata.name,Phase:.status.phase -w 
 ----
-ou utilisez la même commande, mais avec l'option -w (wait), qui permet d'attendre les différentes sorties de le commande sans avoir à la rafraichir. 
+L'option -w (wait), qui permet d'attendre les différentes sorties de le commande sans avoir à la rafraichir. 
    
 .Exemple de sortie
 ----
 Name                                              Phase
 kubernetes-nmstate-operator.4.16.0-202502111405   Succeeded
 ----
+
+Attendez que la phase passe en Succeeded, puis appuyez sur CTRL + C pour revenir au prompt. 
 
 Créer une instance de l'opérateur *nmstate* :
 
