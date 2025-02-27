@@ -272,6 +272,8 @@ oc get deployment -n metallb-system controller
 
 Répétez la commande (ou utilisez l'option -w) jusqu'à ce que AVAILABLE soit égal à 1
 
+Les speakers de MetalLB sont responsables de l'annonce des adresses IP attribuées aux services LoadBalancer à travers le réseau. 
+Les speakers fonctionnent sous forme de DaemonSet dans Kubernetes, ce qui signifie qu'une instance est exécutée sur chaque nœud du cluster.
 Vérifiez que le démon défini pour le speaker est en cours d'exécution :
 
 [source,bash,role=execute]
