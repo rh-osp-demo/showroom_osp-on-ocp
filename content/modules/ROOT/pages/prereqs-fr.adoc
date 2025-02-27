@@ -329,6 +329,12 @@ Confirmez que l’OperatorGroup est installé dans le namespace :
 oc get operatorgroup -n cert-manager-operator
 ----
 
+.Exemple de sortie
+----
+NAME                    AGE
+cert-manager-operator   7s
+----
+
 Abonnez-vous à l'opérateur *cert-manager* :
 
 [source,bash,role=execute]
@@ -354,7 +360,13 @@ Confirmez que le plan d'installation *cert-manager* se trouve dans le namespace�
 
 [source,bash,role=execute]
 ----
-oc get installplan -n cert-manager-operator
+oc get installplan -n cert-manager-operator -w
+----
+
+.Exemple de sortie 
+----
+NAME            CSV                             APPROVAL    APPROVED
+install-64885   cert-manager-operator.v1.15.0   Automatic   true
 ----
 
 Confirmez que l'opérateur *cert-manager* est installé :
