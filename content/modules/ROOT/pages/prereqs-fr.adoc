@@ -279,6 +279,12 @@ Vérifiez que le démon défini pour le speaker est en cours d'exécution :
 oc get daemonset -n metallb-system speaker
 ----
 
+.Exemple de sortie
+----
+NAME      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                            AGE
+speaker   3         3         3       3            3           kubernetes.io/os=linux,node-role.kubernetes.io/worker=   32s
+----
+
 ==== L'opérateur Cert-Manager 
 Cert Manager est un outil de gestion de certificats TLS/SSL pour Kubernetes. Il facilite l'obtention, le renouvellement et l'utilisation des certificats cryptographiques dans les environnements Kubernetes. Cert Manager est devenu un composant essentiel dans de nombreux déploiements Kubernetes pour gérer de manière fiable et automatisée la sécurité TLS des applications. 
 
