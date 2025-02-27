@@ -234,7 +234,7 @@ Confirmez que le plan d'installation *metallb* se trouve dans l'espace de noms 
 
 [source,bash,role=execute]
 ----
-oc get installplan -n metallb-system
+oc get installplan -n metallb-system -w
 ----
 
 Confirmez que l'opérateur *metallb* est installé :
