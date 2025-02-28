@@ -205,8 +205,7 @@ oc apply -f osp-ng-dataplane-node-set-deploy.yaml
 oc apply -f osp-ng-dataplane-deployment.yaml
 ----
 
-Vous pouvez afficher les journaux Ansible pendant l'exécution du déploiement :
-
+Vous pouvez afficher les journaux Ansible pendant l'exécution du déploiement. Il se peut que la commande vous retourne un erreur comme le démmarage de l'exécution du playbook peut prendre quelques secondes à démarrer, repéter la commande au besoin 
 [source,bash,role=execute]
 ----
 oc logs -l app=openstackansibleee -f --max-log-requests 10
