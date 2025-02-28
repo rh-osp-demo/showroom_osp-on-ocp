@@ -63,7 +63,7 @@ Une fois que les nœuds sont disponibles et attachés, configurez la *plage d'ad
 oc apply -f osp-ng-metal-lb-ip-address-pools.yaml
 ----
 
-Configurez une ressource *L2Advertisement* qui définira quel nœud annonce un service au réseau local qui a été préconfiguré pour votre environnement de démonstration :
+Configurez une ressource *L2Advertisement* qui définira queld nœuds (dans ce cas ci les noeuds du controle plane) annoncent le service au réseau local, qui a été préconfiguré pour votre environnement de démonstration :
 
 [source,bash,role=execute]
 ----
