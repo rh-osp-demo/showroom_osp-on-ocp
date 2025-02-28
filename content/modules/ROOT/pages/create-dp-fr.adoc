@@ -235,12 +235,12 @@ NAME                  STATUS   MESSAGE
 openstack-edpm-ipam   True     Setup Complete
 ----
 
+CTRL + C pour quitter
+
 [source,bash,role=execute]
 ----
 oc get openstackdataplanenodeset
 ----
-
-Répétez la requête jusqu'à ce que vous voyiez ce qui suit :
 
 .Exemple de sortie
 ----
