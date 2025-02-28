@@ -52,7 +52,53 @@ Mappez les nœuds de calcul à la cellule de calcul à laquelle ils sont connect
 oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
 ----
 
-Accès au pod openstackclient
+== Activer l'interface graphique Horizon
+
+Du bastion :
+
+[source,bash,role=execute]
+----
+oc patch openstackcontrolplanes/openstack-galera-network-isolation -p='[{"op": "replace", "path": "/spec/horizon/enabled", "value": true}]' --type json
+oc patch openstackcontrolplane/openstack-galera-network-isolation -p '{"spec": {"horizon": {"template": {"customServiceConfig": "USE_X_FORWARDED_HOST = False" }}}}' --type=merge
+----
+
+Vérifiez que les pods Horizon fonctionnent après l'avoir activé :
+
+[source,bash,role=execute]
+----
+oc get pods -n openstack
+----
+
+.Exemple de sortie:
+
+[source,bash,role=execute]
+----
+[...]
+glance-default-single-0                                           3/3     Running             0          7h3m
+horizon-5dbc7bd48c-hfxvw                                          0/1     Terminating         0          3s
+horizon-6bc6f585c5-c8bhn                                          0/1     ContainerCreating   0          2s
+horizon-84f6cc96d7-zhc4k                                          0/1     ContainerCreating   0          3s
+[...]
+----
+
+Obtenir la route pour accéder à Horizon
+
+[source,bash,role=execute]
+----
+ROUTE=$(oc get routes horizon  -o go-template='https://{{range .status.ingress}}{{.host}}{{end}}')
+echo $ROUTE
+----
+
+.Exemple de sortie
+----
+https://horizon-openstack.apps.86dgb.dynamic.redhatworkshops.io
+----
+
+Cliquez sur l'URL et connectez-vous avec le nom d'utilisateur `admin` et le mot de passe `openstack`
+
+CREATION D'UN PREMIER INSTANCE 
+
+Accèdez au pod de gestion openstackclient
 
 [source,bash,role=execute]
 ----
@@ -134,46 +180,3 @@ ssh cirros@<FLOATING_IP> (password is gocubsgo)
 exit
 ----
 
-== Facultatif : Activer Horizon
-
-Du bastion :
-
-[source,bash,role=execute]
-----
-oc patch openstackcontrolplanes/openstack-galera-network-isolation -p='[{"op": "replace", "path": "/spec/horizon/enabled", "value": true}]' --type json
-oc patch openstackcontrolplane/openstack-galera-network-isolation -p '{"spec": {"horizon": {"template": {"customServiceConfig": "USE_X_FORWARDED_HOST = False" }}}}' --type=merge
-----
-
-Vérifiez que les pods Horizon fonctionnent après l'avoir activé :
-
-[source,bash,role=execute]
-----
-oc get pods -n openstack
-----
-
-.Exemple de sortie:
-
-[source,bash,role=execute]
-----
-[...]
-glance-default-single-0                                           3/3     Running             0          7h3m
-horizon-5dbc7bd48c-hfxvw                                          0/1     Terminating         0          3s
-horizon-6bc6f585c5-c8bhn                                          0/1     ContainerCreating   0          2s
-horizon-84f6cc96d7-zhc4k                                          0/1     ContainerCreating   0          3s
-[...]
-----
-
-Obtenir la route
-
-[source,bash,role=execute]
-----
-ROUTE=$(oc get routes horizon  -o go-template='https://{{range .status.ingress}}{{.host}}{{end}}')
-echo $ROUTE
-----
-
-.Exemple de sortie
-----
-https://horizon-openstack.apps.86dgb.dynamic.redhatworkshops.io
-----
-
-Cliquez sur l'URL et connectez-vous avec le nom d'utilisateur `admin` et le mot de passe `openstack`
