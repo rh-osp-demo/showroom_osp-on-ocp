@@ -42,9 +42,9 @@ exit
 +--------------------------------------+----------------------+-----------------------------------------+-------------------+-------+-------+----------------+
 | 6e137959-8a62-4f61-92ef-dbd328647614 | OVN Controller agent | edpm-compute-0.ctlplane.aio.example.com |                   | :-)   | UP    | ovn-controller |
 +--------------------------------------+----------------------+-----------------------------------------+-------------------+-------+-------+----------------+
-
 ----
 
+Les "cells" (cellule) dans Openstack sont un mécanisme de mise à l'échelle de l'architecture qui permet de diviser un déploiement Nova (le service de calcul d'OpenStack) en unités plus petites et gérables.
 Mappez les nœuds de calcul à la cellule de calcul à laquelle ils sont connectés :
 
 [source,bash,role=execute]
