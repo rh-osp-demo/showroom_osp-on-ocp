@@ -37,10 +37,12 @@ oc apply -f osp-ng-openstack-operator.yaml
 . Installez les opérateurs en utilisant la stratégie d'approbation manuelle. 
 +
 Confirmez qu'un plan d'installation a été créé mais non exécuté (car il n'a pas été approuvé):
+
 [source,bash,role=execute]
 ----
-oc get installplan -n openstack-operators
+oc get installplan -n openstack-operators -w 
 ----
+Attendez que le plan s'affiche avant de poursuivre.  
 
 .Exemple de sortie
 ----
