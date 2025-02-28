@@ -166,6 +166,7 @@ Créez un secret pour subscription-manager et un secret pour le registre Red Hat
 
 SECRET POUR SUBSCRIPTION-MANAGER
 
+Remplacer les information vi bas par votre nom d'utilisateur et votre mot de passe Red Hat. 
 [source,bash,role=execute]
 ----
 echo -n "your_username" | base64
