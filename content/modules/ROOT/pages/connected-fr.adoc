@@ -9,7 +9,7 @@ Dans ce laboratoire, vous utiliserez l'infrastructure suivante :
 Dans ce laboratoire, vous couvrirez les sujets suivants :
 
 * xref:prereqs-fr.adoc[Effectuer les opérations préalables]
-* xref:install-operators-fr.adoc[Installer les opérateurs de services Red Hat OpenStack Platform]
+* xref:install-operators-fr.adoc[Installer les opérateurs Red Hat OpenStack Platform Services On Openshift]
 * xref:secure-fr.adoc[Configurer un accès sécurisé pour les services OpenStack]
 * xref:network-isolation-fr.adoc[Préparer OCP pour l'isolation réseau OpenStack]
 * xref:create-cp-fr.adoc[Créer le plan de contrôle]
