@@ -218,8 +218,6 @@ PLAY RECAP *********************************************************************
 edpm-compute-0             : ok=53   changed=26   unreachable=0    failed=0    skipped=54   rescued=0    ignored=0
 ----
 
-Ctrl-C pour quitter.
-
 Vérifiez que le plan de données est déployé.
 
 REMARQUE : Cela prend plusieurs minutes (et plusieurs minutes!).
