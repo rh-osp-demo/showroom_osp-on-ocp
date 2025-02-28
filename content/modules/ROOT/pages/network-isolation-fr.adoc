@@ -78,7 +78,7 @@ Vérifiez le backend réseau utilisé par votre cluster:
 ----
 oc get network.operator cluster --output=jsonpath='{.spec.defaultNetwork.type}'
 ----
-Si le backend est OVNKubernetes, exécutez la commande suivante pour activer le transfert IP global :
+Si le backend est OVNKubernetes (ce qui devrait être la cas), exécutez la commande suivante pour activer le transfert IP global :
 
 [source,bash,role=execute]
 ----
