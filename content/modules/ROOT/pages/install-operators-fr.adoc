@@ -67,12 +67,6 @@ oc get operators openstack-operator.openstack-operators
 ----
 
 . Examinez les pods dans le namespace **openstack-operators** :
-+
-[source,bash,role=execute]
-----
-oc get pods -n openstack-operators
-----
-
 . Si vous exécutez :
 +
 
