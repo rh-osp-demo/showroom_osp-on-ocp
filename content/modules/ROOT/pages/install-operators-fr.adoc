@@ -1,6 +1,6 @@
 = Installer les opérateurs OpenStack
 
-. Cloner le dépot de fichier
+. Cloner le dépot de fichier du lab
 +
 Dans le terminal du bastion, clonez le dépôt et changez de répertoire pour accéder aux fichiers que nous utiliserons plus tard dans le laboratoire
 +
@@ -37,20 +37,20 @@ oc apply -f osp-ng-openstack-operator.yaml
 . Installez les opérateurs en utilisant la stratégie d'approbation manuelle. 
 +
 Confirmez qu'un plan d'installation a été créé mais non exécuté (car il n'a pas été approuvé):
-
++
 [source,bash,role=execute]
 ----
 oc get installplan -n openstack-operators -w 
 ----
 Attendez que le plan s'affiche avant de poursuivre.  
-
++
 .Exemple de sortie
 ----
 NAME            CSV                       APPROVAL   APPROVED
 install-lfs4j   octavia-operator.v1.0.0   Manual     false
 ----
 . Approuver l'installation des opérateurs en mettant à jour le nom de l'installplan fournit dans la commande précédente : 
-
++
 [source,bash,role=execute]
 ----
 oc patch installplan install-lfs4j  \
@@ -73,9 +73,9 @@ oc get operators openstack-operator.openstack-operators
 ----
 oc get pods -n openstack-operators --sort-by=.metadata.creationTimestamp -w 
 ----
-
++
 Vous devriez voir une liste des pods (cette étape prend quelques minutes) 
-
++
 .Exemple de sortie 
 ----
 NAME                                                              READY   STATUS    RESTARTS   AGE
@@ -102,5 +102,5 @@ rabbitmq-cluster-operator-7d6b597db7-mtknb                        1/1     Runnin
 swift-operator-controller-manager-5fdb4c94d9-bp9l6                2/2     Running   0          6m22s
 telemetry-operator-controller-manager-564b55fd8-tzmcb             2/2     Running   0          8m11s
 ---- 
-
++
 Les opérateurs Openstack sont maintenant installés !
