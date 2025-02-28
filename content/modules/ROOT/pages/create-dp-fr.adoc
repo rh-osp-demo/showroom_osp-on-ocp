@@ -220,11 +220,11 @@ edpm-compute-0             : ok=53   changed=26   unreachable=0    failed=0    s
 
 Vérifiez que le plan de données est déployé.
 
-REMARQUE : Cela prend plusieurs minutes (et plusieurs minutes!).
+REMARQUE : Cela prend plusieurs minutes (et vraiment plusieurs minutes!).
 
 [source,bash,role=execute]
 ----
-oc get openstackdataplanedeployment
+oc get openstackdataplanedeployment -w 
 ----
 
 Répétez la requête jusqu'à ce que vous voyiez ce qui suit :
