@@ -96,7 +96,7 @@ https://horizon-openstack.apps.86dgb.dynamic.redhatworkshops.io
 
 Cliquez sur l'URL et connectez-vous avec le nom d'utilisateur `admin` et le mot de passe `openstack`
 
-CREATION D'UN PREMIER INSTANCE 
+== CREATION D'UN PREMIER INSTANCE 
 
 Accèdez au pod de gestion openstackclient
 
