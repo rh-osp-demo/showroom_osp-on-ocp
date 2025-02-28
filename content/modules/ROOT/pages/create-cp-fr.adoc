@@ -54,7 +54,7 @@ oc get openstackcontrolplane -n openstack -w
 
 AVERTISSEMENT: Cela peut prendre plusieurs minutes.
 
-Répétez la requête jusqu'à ce que MESSAGE indique "Setup complete"
+Attendre que le MESSAGE indique "Setup complete"
 
 .Exemple de sortie
 ----
