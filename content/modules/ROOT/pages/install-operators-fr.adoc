@@ -52,7 +52,6 @@ install-lfs4j   octavia-operator.v1.0.0   Manual     false
 . Approuver l'installation des opérateurs en mettant à jour le nom de l'installplan fournit dans la commande précédente : 
 
 [source,bash,role=execute]
-+
 ----
 oc patch installplan install-lfs4j  \
     --namespace openstack-operators \
