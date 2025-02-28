@@ -46,6 +46,8 @@ osp-enp1s0-worker-ocp4-worker1    Available   SuccessfullyConfigured
 osp-enp1s0-worker-ocp4-worker2    Available   SuccessfullyConfigured
 osp-enp1s0-worker-ocp4-worker3    Available   SuccessfullyConfigured
 ----
+Dans Kubernetes, une "Network Attachment Definition" est une ressource personnalisée qui permet de configurer des interfaces réseau supplémentaires pour les pods.
+Cette ressource fait partie du projet Multus, qui permet à un pod d'avoir plusieurs interfaces réseau. En utilisant une Network Attachment Definition, vous pouvez définir différents types de réseaux auxquels vos pods peuvent se connecter, au-delà du réseau principal de Kubernetes.
 
 Avant de continuer, configurez une ressource *nad* pour chaque réseau isolé afin d'attacher un pod de service au réseau :
 
