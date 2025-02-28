@@ -37,14 +37,12 @@ exit
 
 .Exemple de sortie
 ----
-+--------------------------------------+------------------------------+--------------------------------+-------------------+-------+-------+----------------+
-| ID                                   | Agent Type                   | Host                           | Availability Zone | Alive | State | Binary         |
-+--------------------------------------+------------------------------+--------------------------------+-------------------+-------+-------+----------------+
-| 7a0966e9-e6ef-49f3-ba9e-e16d2c96f0b3 | OVN Controller Gateway agent | ocp4-worker3.aio.example.com   |                   | :-)   | UP    | ovn-controller |
-| 696925cf-518f-410c-bb0d-cd1cdc753393 | OVN Controller Gateway agent | ocp4-worker1.aio.example.com   |                   | :-)   | UP    | ovn-controller |
-| 881583db-0ef8-425f-afe8-d2eaef68bc32 | OVN Controller Gateway agent | ocp4-worker2.aio.example.com   |                   | :-)   | UP    | ovn-controller |
-| 0cc63eb1-f7c9-482d-8a1f-80e9bcbc62e5 | OVN Controller agent         | edpm-compute-0.aio.example.com |                   | :-)   | UP    | ovn-controller |
-+--------------------------------------+------------------------------+--------------------------------+-------------------+-------+-------+----------------+
++--------------------------------------+----------------------+-----------------------------------------+-------------------+-------+-------+----------------+
+| ID                                   | Agent Type           | Host                                    | Availability Zone | Alive | State | Binary         |
++--------------------------------------+----------------------+-----------------------------------------+-------------------+-------+-------+----------------+
+| 6e137959-8a62-4f61-92ef-dbd328647614 | OVN Controller agent | edpm-compute-0.ctlplane.aio.example.com |                   | :-)   | UP    | ovn-controller |
++--------------------------------------+----------------------+-----------------------------------------+-------------------+-------+-------+----------------+
+
 ----
 
 Mappez les nœuds de calcul à la cellule de calcul à laquelle ils sont connectés :
