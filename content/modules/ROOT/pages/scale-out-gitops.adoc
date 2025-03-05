@@ -41,11 +41,12 @@ The new host should be visible:
 Back on the **bastion** server:
 
 Clone the Files Repo
-+
-In the bastion terminal, make sure that you are in lab yamls directory:
-+
+
+In the bastion terminal, clone the repo and change directory to the files that we will used later in the lab:
+
 [source,bash,role=execute]
 ----
+git clone https://github.com/rh-osp-demo/showroom_osp-on-ocp.git labrepo
 cd labrepo/content/files
 ----
 
@@ -53,6 +54,7 @@ The BMO manages BareMetalHost CRs in the openshift-machine-api namespace by defa
 
 [source,bash,role=execute]
 ----
+oc project openstack
 oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"watchAllNamespaces": true }}'
 ----
 
@@ -65,13 +67,13 @@ oc apply -f osp-ng-osp-compute1-bmh.yaml -n openshift-machine-api
 Wait until the baremal host is in Available state. The bmh will move first to registering, then to inspecting and finally to available state. This process could take around 4 min.
 [source,bash,role=execute]
 ----
-oc get bmh -n openshift-machine-api -w
+oc get bmh -n openshift-machine-api -n openstack -w
 ----
 Sample output:
 
 [source,bash]
 ----
-oc get bmh -n openshift-machine-api
+oc get bmh -n openshift-machine-api -n openstack 
 NAME           STATE                    CONSUMER                   ONLINE   ERROR   AGE
 master1        externally provisioned   ocp-49jkw-master-0         true             12h
 master2        externally provisioned   ocp-49jkw-master-1         true             12h
@@ -144,7 +146,7 @@ You can view the Ansible logs while the deployment executes:
 
 [source,bash,role=execute]
 ----
-oc logs -l app=openstackansibleee -f --max-log-requests 10
+oc logs -l app=openstackansibleee -n openstack -f --max-log-requests 10
 ----
 
 .Sample Output
@@ -176,7 +178,7 @@ openstack-scale-out-provisioned   True     Setup Complete
 
 [source,bash,role=execute]
 ----
-oc get openstackdataplanenodeset
+oc get openstackdataplanenodeset -n openstack
 ----
 
 Repeat the query until you see the following:
