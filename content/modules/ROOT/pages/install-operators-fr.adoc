@@ -59,6 +59,13 @@ oc patch installplan install-lfs4j  \
     --patch '{"spec":{"approved":true}}'
 ---- 
 
+. Initialisez l'operateur:
++
+[source,bash,role=execute]
+----
+oc apply -f osp-ng-openstack-operator-init.yaml
+----
+
 . Confirmez que vous avez installé l'opérateur Openstack, *openstack-operator.openstack-operators*:
 +
 [source,bash,role=execute]

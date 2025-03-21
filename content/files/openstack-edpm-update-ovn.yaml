@@ -6,4 +6,5 @@ spec:
   nodeSets:
     - openstack-edpm-ipam
   servicesOverride:
+    - configure-os
     - ovn
