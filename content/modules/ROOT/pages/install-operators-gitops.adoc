@@ -47,6 +47,19 @@ Access the OpenShift Gitops console to check the deployment of the RHOSO operato
 
 image::3_openstack_operators_installation.png[OpenStack Operators Installation]
 
+Initialize the openstack operator:
+
+[source,bash,role=execute]
+----
+cat << EOF | oc apply -f -
+apiVersion: operator.openstack.org/v1beta1
+kind: OpenStack
+metadata:
+   name: openstack
+   namespace: openstack-operators
+EOF
+----
+
 . Review the pods in the **openstack-operators** namespace:
 +
 [source,bash,role=execute]
