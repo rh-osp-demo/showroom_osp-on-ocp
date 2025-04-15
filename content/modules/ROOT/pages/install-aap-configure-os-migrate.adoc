@@ -212,9 +212,16 @@ Navigate that URL with your browser and finish the Ansible Automation Platform b
 
 1. From the navigation panel, go to *Automation Execution* → *Infrastructure* → *Hosts*.
 2. Click *Create Host* and set the following parameters:
-   * **Name:** conversion_host
+   * **Name:** 192.168.123.95
    * **Inventory:** Conversion Host Inventory
-3. Click *Create Host*.
+   * **Variables:**
+
+[source,bash,role=execute]
+----
+ansible_ssh_user: cloud-user
+----
+
+Click *Create Host*.
 
 ==== Migrator Host
 
@@ -226,8 +233,8 @@ Navigate that URL with your browser and finish the Ansible Automation Platform b
 
 [source,bash,role=execute]
 ----
-ansible_host: localhost
 ansible_connection: local
+ansible_python_interpreter: '{{ ansible_playbook_python }}'
 ----
 
 Click *Create Host*.
@@ -244,6 +251,7 @@ Click *Create Host*.
    * Click on `conversion_host`.
    * Go to the *Hosts* tab within the group.
    * Click *Add*, select `192.168.123.95` from the list, and click *Save*.
+   * Click *Add*, select `migrator` from the list, and click *Save*.
 
 === Creating an Execution Environment
 
